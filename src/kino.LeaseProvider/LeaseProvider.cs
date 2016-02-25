@@ -34,14 +34,21 @@ namespace kino.LeaseProvider
             intercomMessageHub.Start();
         }
 
-        public Lease GetLease(Instance instance, byte[] ownerPayload)
+        public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] ownerPayload, TimeSpan requestTimeout)
         {
+            throw new NotImplementedException("Timeout");
+
+            ValidateLeaseTimeSpan(leaseTimeSpan);
+
             IInstanceLeaseProvider leaseProvider;
 
             lock (@lock)
             {
                 if (!leaseProviders.TryGetValue(instance, out leaseProvider))
                 {
+                    var instanceLeaseConfig = Clone(leaseConfig);
+                    instanceLeaseConfig.MaxLeaseTimeSpan = leaseTimeSpan;
+
                     leaseProvider = new InstanceLeaseProvider(instance,
                                                               new InstanceRoundBasedRegister(instance,
                                                                                              intercomMessageHub,
@@ -50,7 +57,7 @@ namespace kino.LeaseProvider
                                                                                              leaseConfig,
                                                                                              logger),
                                                               ballotGenerator,
-                                                              leaseConfig,
+                                                              instanceLeaseConfig,
                                                               synodConfig,
                                                               logger);
                     leaseProviders[instance] = leaseProvider;
@@ -58,6 +65,24 @@ namespace kino.LeaseProvider
             }
 
             return leaseProvider.GetLease(ownerPayload);
+        }
+
+        private LeaseConfiguration Clone(LeaseConfiguration src)
+            => new LeaseConfiguration
+               {
+                   ClockDrift = src.ClockDrift,
+                   MaxLeaseTimeSpan = src.MaxLeaseTimeSpan,
+                   MessageRoundtrip = src.MessageRoundtrip,
+                   NodeResponseTimeout = src.NodeResponseTimeout
+               };
+
+        private void ValidateLeaseTimeSpan(TimeSpan leaseTimeSpan)
+        {
+            if (leaseTimeSpan < leaseConfig.MaxLeaseTimeSpan)
+            {
+                throw new ArgumentException($"Requested LeaseTimeSpan ({leaseTimeSpan.TotalMilliseconds} ms) " +
+                                            $"should be longer than min allowed {leaseConfig.MaxLeaseTimeSpan.TotalMilliseconds} ms!");
+            }
         }
 
         private void ValidateConfiguration(LeaseConfiguration config)

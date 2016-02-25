@@ -26,6 +26,7 @@ namespace kino.LeaseProvider
                                      ISynodConfiguration synodConfig,
                                      ILogger logger)
         {
+            //TODO: Check, if needed. Otherwise, GetLease() may fail with request timeout
             WaitBeforeNextLeaseIssued(config);
 
             localNode = synodConfig.LocalNode;
