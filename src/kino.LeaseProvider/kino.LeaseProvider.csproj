@@ -99,12 +99,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsensusMessages.cs" />
+    <Compile Include="IInstanceLeaseProvider.cs" />
+    <Compile Include="ILeaseProvider.cs" />
+    <Compile Include="Instance.cs" />
+    <Compile Include="InstanceLeaseProvider.Logging.cs" />
+    <Compile Include="InstanceLeaseProvider.cs" />
+    <Compile Include="InstanceRoundBasedRegister.Logging.cs" />
+    <Compile Include="InstanceRoundBasedRegister.cs" />
+    <Compile Include="LeaseProvider.cs" />
     <Compile Include="LeaseProviderActor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

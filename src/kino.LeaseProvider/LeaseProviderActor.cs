@@ -1,9 +1,6 @@
 ﻿using System.Threading.Tasks;
 using kino.Actors;
-using kino.Consensus;
-using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
-using kino.Core.Diagnostics;
 using kino.Core.Messaging;
 using kino.LeaseProvider.Messages;
 
@@ -11,28 +8,17 @@ namespace kino.LeaseProvider
 {
     public class LeaseProviderActor : Actor
     {
-        private readonly IRoundBasedRegister register;
-        private readonly IBallotGenerator ballotGenerator;
-        private readonly LeaseConfiguration config;
-        private readonly ISynodConfiguration synodConfig;
-        private readonly ILogger logger;
+        private readonly ILeaseProvider leaseProvider;
 
-        public LeaseProviderActor(IRoundBasedRegister register,
-                                  IBallotGenerator ballotGenerator,
-                                  LeaseConfiguration config,
-                                  ISynodConfiguration synodConfig,
-                                  ILogger logger)
+        public LeaseProviderActor(ILeaseProvider leaseProvider)
         {
-            this.register = register;
-            this.ballotGenerator = ballotGenerator;
-            this.config = config;
-            this.synodConfig = synodConfig;
-            this.logger = logger;
+            this.leaseProvider = leaseProvider;
         }
 
-        [MessageHandlerDefinition(typeof(GetLeaseMessage))]
+        [MessageHandlerDefinition(typeof (GetLeaseMessage))]
         public Task<ActorResult> GetLease(IMessage message)
         {
+            return null;
         }
     }
 }
