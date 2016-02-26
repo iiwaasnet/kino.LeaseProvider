@@ -1,0 +1,43 @@
+﻿{
+    "dev": {
+        "kino": {
+            "routerUri": "inproc://router",
+            "scaleOutAddressUri": "tcp://127.0.0.2:5201",
+            "pingSilenceBeforeRendezvousFailover": "00:00:20",
+            "pongSilenceBeforeRouteDeletion": "00:00:10",
+            "runAsStandalone": false,
+
+            "rendezvousServers": [
+                {
+                    "broadcastUri": "tcp://127.0.0.8:8001",
+                    "unicastUri": "tcp://127.0.0.8:8011"
+                },
+                {
+                    "broadcastUri": "tcp://127.0.0.8:8002",
+                    "unicastUri": "tcp://127.0.0.8:8012"
+                },
+                {
+                    "broadcastUri": "tcp://127.0.0.8:8003",
+                    "unicastUri": "tcp://127.0.0.8:8013"
+                }
+            ]
+        },
+        "leaseProvider": {
+            "synod": {
+                "localNode": "tcp://127.0.0.71:7000",
+                "members": [
+                    "tcp://127.0.0.71:7000",
+                    "tcp://127.0.0.72:7000",
+                    "tcp://127.0.0.73:7000"
+                ]
+
+            },
+            "lease": {
+                "maxLeaseTimeSpan": "00:00:03",
+                "clockDrift": "00:00:00.100",
+                "messageRoundtrip": "00:00:00.400",
+                "nodeResponseTimeout": "00:00:00.200"
+            }
+        }
+    }
+}

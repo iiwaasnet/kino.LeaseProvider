@@ -30,13 +30,21 @@ namespace kino.LeaseProvider
             this.leaseConfig = leaseConfig;
             this.logger = logger;
             leaseProviders = new Dictionary<Instance, IInstanceLeaseProvider>();
+        }
 
+        public void Start()
+        {
             intercomMessageHub.Start();
+        }
+
+        public void Stop()
+        {
+            intercomMessageHub.Stop();
         }
 
         public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] ownerPayload, TimeSpan requestTimeout)
         {
-            throw new NotImplementedException("Timeout");
+            //throw new NotImplementedException("Timeout");
 
             ValidateLeaseTimeSpan(leaseTimeSpan);
 
