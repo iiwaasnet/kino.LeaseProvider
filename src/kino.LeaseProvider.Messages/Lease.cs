@@ -13,6 +13,6 @@ namespace kino.LeaseProvider.Messages
         public Node Owner { get; set; }
 
         [ProtoMember(3)]
-        public TimeSpan LeaseTimeSpan { get; set; }
+        public DateTime ExpiresAt { get; set; }
     }
 }

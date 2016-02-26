@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using kino.Actors;
 using kino.Core.Connectivity;
+using kino.Core.Framework;
 using kino.Core.Messaging;
 using kino.LeaseProvider.Messages;
+using Node = kino.LeaseProvider.Messages.Node;
 
 namespace kino.LeaseProvider
 {
@@ -27,11 +29,26 @@ namespace kino.LeaseProvider
                                                messageSerializer.Serialize(payload.Requestor),
                                                payload.RequestTimeout);
 
-            return new ActorResult(Message.Create(new LeaseResponseMessage
-                                                  {
-                                                      LeaseAquired = false, // set to TRUE only if lease is obtained and owner is the requestor
-                                                      Lease = null
-                                                  }));
+            var leaseOwner = messageSerializer.Deserialize<Node>(lease.OwnerPayload);
+
+            var requestorWonTheLease = RequestorWonTheLease(payload.Requestor, leaseOwner);
+
+            var result = Message.Create(new LeaseResponseMessage
+                                        {
+                                            LeaseAquired = requestorWonTheLease,
+                                            Lease = requestorWonTheLease
+                                                        ? new Lease
+                                                          {
+                                                              Instance = payload.Instance,
+                                                              ExpiresAt = lease.ExpiresAt,
+                                                              Owner = leaseOwner
+                                                          }
+                                                        : null
+                                        });
+            return new ActorResult(result);
         }
+
+        private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
+            => requestor.Uri == leaseOwner.Uri && Unsafe.Equals(requestor.Identity, leaseOwner.Identity);
     }
 }
