@@ -20,7 +20,7 @@ namespace kino.LeaseProvider
         }
 
         [MessageHandlerDefinition(typeof (LeaseRequestMessage))]
-        public async Task<ActorResult> GetLease(IMessage message)
+        public async Task<IActorResult> GetLease(IMessage message)
         {
             var payload = message.GetPayload<LeaseRequestMessage>();
 

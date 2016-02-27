@@ -51,6 +51,10 @@ namespace kino.LeaseProvider
             builder.RegisterType<LeaseProviderActor>()
                    .As<IActor>()
                    .SingleInstance();
+
+            builder.Register(c => new ProtobufMessageSerializer())
+                   .As<IMessageSerializer>()
+                   .SingleInstance();
         }
 
         private static void RegisterConsensus(ContainerBuilder builder)
@@ -78,17 +82,13 @@ namespace kino.LeaseProvider
             builder.RegisterType<LeaseProvider>()
                    .As<ILeaseProvider>()
                    .SingleInstance();
-
-            builder.Register(c => new ProtobufMessageSerializer())
-                   .As<IMessageSerializer>()
-                   .SingleInstance();
         }
 
         private static void RegisterConfiguration(ContainerBuilder builder)
         {
             builder.RegisterType<AppConfigTargetProvider>()
-                  .As<IConfigTargetProvider>()
-                  .SingleInstance();
+                   .As<IConfigTargetProvider>()
+                   .SingleInstance();
 
             builder.RegisterType<ConfigProvider>()
                    .As<IConfigProvider>()

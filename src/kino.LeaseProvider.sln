@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Messages
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider", "kino.LeaseProvider\kino.LeaseProvider.csproj", "{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Client", "kino.LeaseProvider.Client\kino.LeaseProvider.Client.csproj", "{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
