@@ -1,15 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading;
-using kino.Consensus;
-using kino.Consensus.Configuration;
-using kino.Consensus.Messages;
-using kino.Core.Diagnostics;
+﻿using kino.Consensus;
 using kino.Core.Framework;
-using kino.Core.Messaging;
-using Ballot = kino.Consensus.Ballot;
-using Lease = kino.Consensus.Lease;
 
 namespace kino.LeaseProvider
 {

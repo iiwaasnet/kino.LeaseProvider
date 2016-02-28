@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using kino.Actors;
+using kino.Actors.Diagnostics;
 using kino.Client;
 using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
@@ -45,6 +47,10 @@ namespace kino.LeaseProvider.Client
 
             builder.Register(c => c.Resolve<IConfigurationProvider>().GetClusterMembershipConfiguration())
                    .As<ClusterMembershipConfiguration>()
+                   .SingleInstance();
+
+            builder.RegisterType<ExceptionHandlerActor>()
+                   .As<IActor>()
                    .SingleInstance();
         }
     }

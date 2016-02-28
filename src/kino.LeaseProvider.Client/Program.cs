@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Autofac;
+using kino.Actors;
 using kino.Client;
 using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
@@ -33,38 +34,51 @@ namespace kino.LeaseProvider.Client
                                                                container.Resolve<ILogger>());
             messageHub.Start();
 
+            // Host Actors
+            var actorHostManager = componentResolver.BuildActorHostManager(container.Resolve<RouterConfiguration>(),
+                                                                          container.Resolve<ILogger>());
+            foreach (var actor in container.Resolve<IEnumerable<IActor>>())
+            {
+                actorHostManager.AssignActor(actor);
+            }
+
             Thread.Sleep(TimeSpan.FromSeconds(5));
             Console.WriteLine($"Client is running... {DateTime.Now}");
 
-            var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
-                                                         {
-                                                             Instance = "A",
-                                                             LeaseTimeSpan = TimeSpan.FromSeconds(5),
-                                                             RequestTimeout = TimeSpan.FromSeconds(1),
-                                                             Requestor = new Messages.Node
-                                                                         {
-                                                                             Identity = Guid.NewGuid().ToByteArray(),
-                                                                             Uri = "tpc://localhost"
-                                                                         }
-                                                         });
-            request.TraceOptions = MessageTraceOptions.None;
-            var callbackPoint = CallbackPoint.Create<LeaseResponseMessage>();
-            var promise = messageHub.EnqueueRequest(request, callbackPoint);
-            var waitTimeout = TimeSpan.FromSeconds(5);
-            if (promise.GetResponse().Wait(waitTimeout))
+            while (true)
             {
-                var response = promise.GetResponse().Result.GetPayload<LeaseResponseMessage>();
+                var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
+                {
+                    Instance = "A",
+                    LeaseTimeSpan = TimeSpan.FromSeconds(5),
+                    RequestTimeout = TimeSpan.FromSeconds(1),
+                    Requestor = new Messages.Node
+                    {
+                        Identity = Guid.NewGuid().ToByteArray(),
+                        Uri = "tpc://localhost"
+                    }
+                });
+                request.TraceOptions = MessageTraceOptions.None;
+                var callbackPoint = CallbackPoint.Create<LeaseResponseMessage>();
+                var promise = messageHub.EnqueueRequest(request, callbackPoint);
+                var waitTimeout = TimeSpan.FromSeconds(5);
+                if (promise.GetResponse().Wait(waitTimeout))
+                {
+                    var response = promise.GetResponse().Result.GetPayload<LeaseResponseMessage>();
 
-                Console.WriteLine($"{DateTime.UtcNow} " +
-                                  $"Aquired: {response.LeaseAquired} " +
-                                  $"Instance: {response.Lease.Instance} " +
-                                  $"Owner: {response.Lease.Owner.Uri} " +
-                                  $"ExpiresAt: {response.Lease.ExpiresAt}");
+                    Console.WriteLine($"{DateTime.UtcNow} " +
+                                      $"Aquired: {response.LeaseAquired} " +
+                                      $"Instance: {response.Lease?.Instance} " +
+                                      $"Owner: {response.Lease?.Owner.Uri} " +
+                                      $"ExpiresAt: {response.Lease?.ExpiresAt}");
+                }
+                else
+                {
+                    Console.WriteLine($"Call timed out after {waitTimeout.TotalSeconds} sec.");
+                }
+                Thread.Sleep(TimeSpan.FromSeconds(2));
             }
-            else
-            {
-                Console.WriteLine($"Call timed out after {waitTimeout.TotalSeconds} sec.");
-            }
+            
 
             Console.ReadLine();
             messageHub.Stop();

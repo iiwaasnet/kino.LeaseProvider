@@ -35,6 +35,7 @@ namespace kino.LeaseProvider
         public void Start()
         {
             intercomMessageHub.Start();
+            CreateInstanceLeaseProvider(new Instance("A"), TimeSpan.FromSeconds(5));
         }
 
         public void Stop()
@@ -48,6 +49,13 @@ namespace kino.LeaseProvider
 
             ValidateLeaseTimeSpan(leaseTimeSpan);
 
+            var leaseProvider = CreateInstanceLeaseProvider(instance, leaseTimeSpan);
+
+            return leaseProvider.GetLease(ownerPayload);
+        }
+
+        private IInstanceLeaseProvider CreateInstanceLeaseProvider(Instance instance, TimeSpan leaseTimeSpan)
+        {
             IInstanceLeaseProvider leaseProvider;
 
             lock (@lock)
@@ -71,8 +79,7 @@ namespace kino.LeaseProvider
                     leaseProviders[instance] = leaseProvider;
                 }
             }
-
-            return leaseProvider.GetLease(ownerPayload);
+            return leaseProvider;
         }
 
         private LeaseConfiguration Clone(LeaseConfiguration src)

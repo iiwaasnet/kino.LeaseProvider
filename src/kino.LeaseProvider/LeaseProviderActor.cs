@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using kino.Actors;
 using kino.Core.Connectivity;
+using kino.Core.Diagnostics;
 using kino.Core.Framework;
 using kino.Core.Messaging;
 using kino.LeaseProvider.Messages;
@@ -12,11 +13,15 @@ namespace kino.LeaseProvider
     {
         private readonly ILeaseProvider leaseProvider;
         private readonly IMessageSerializer messageSerializer;
+        private readonly ILogger logger;
 
-        public LeaseProviderActor(ILeaseProvider leaseProvider, IMessageSerializer messageSerializer)
+        public LeaseProviderActor(ILeaseProvider leaseProvider,
+                                  IMessageSerializer messageSerializer,
+                                  ILogger logger)
         {
             this.leaseProvider = leaseProvider;
             this.messageSerializer = messageSerializer;
+            this.logger = logger;
         }
 
         [MessageHandlerDefinition(typeof (LeaseRequestMessage))]
@@ -49,6 +54,11 @@ namespace kino.LeaseProvider
         }
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
-            => requestor.Uri == leaseOwner.Uri && Unsafe.Equals(requestor.Identity, leaseOwner.Identity);
+        {
+            logger.Trace($"Requestor URI: {requestor.Uri} LeaseOwner URI: {leaseOwner.Uri} " +
+                         $"Requestor Identity: {requestor.Identity.GetString()} LeaseOwner Identity {leaseOwner.Identity.GetString()}");
+
+            return requestor.Uri == leaseOwner.Uri && Unsafe.Equals(requestor.Identity, leaseOwner.Identity);
+        }
     }
 }
