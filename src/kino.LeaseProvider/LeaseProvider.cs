@@ -43,7 +43,7 @@ namespace kino.LeaseProvider
             intercomMessageHub.Stop();
         }
 
-        public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] ownerPayload, TimeSpan requestTimeout)
+        public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] requestorIdentity, TimeSpan requestTimeout)
         {
             //throw new NotImplementedException("Timeout");
 
@@ -51,7 +51,7 @@ namespace kino.LeaseProvider
 
             var leaseProvider = CreateInstanceLeaseProvider(instance, leaseTimeSpan);
 
-            return leaseProvider.GetLease(ownerPayload);
+            return leaseProvider.GetLease(requestorIdentity);
         }
 
         private IInstanceLeaseProvider CreateInstanceLeaseProvider(Instance instance, TimeSpan leaseTimeSpan)

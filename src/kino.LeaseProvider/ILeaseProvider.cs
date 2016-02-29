@@ -5,7 +5,7 @@ namespace kino.LeaseProvider
 {
     public interface ILeaseProvider
     {
-        Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] ownerPayload, TimeSpan requestTimeout);
+        Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] requestorIdentity, TimeSpan requestTimeout);
         void Start();
         void Stop();
     }
