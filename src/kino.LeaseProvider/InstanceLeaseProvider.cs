@@ -17,7 +17,7 @@ namespace kino.LeaseProvider
         private readonly Node localNode;
         private readonly ILogger logger;
         private volatile Lease lastKnownLease;
-        private byte[] ownerPayload;
+        //private byte[] ownerPayload;
 
         public InstanceLeaseProvider(Instance instance,
                                      IRoundBasedRegister register,
@@ -37,35 +37,35 @@ namespace kino.LeaseProvider
             this.logger = logger;
         }
 
-        public Lease GetLease(byte[] ownerPayload)
+        public Lease GetLease(byte[] requestorIdentity)
         {
-            Interlocked.Exchange(ref this.ownerPayload, ownerPayload);
+            //Interlocked.Exchange(ref this.ownerPayload, requestorIdentity);
 
-            return GetLastKnownLease();
+            return GetLastKnownLease(requestorIdentity);
         }
 
-        private Lease GetLastKnownLease()
+        private Lease GetLastKnownLease(byte[] requestorIdentity)
         {
             var now = DateTime.UtcNow;
 
             if (LeaseNullOrExpired(lastKnownLease, now))
             {
-                ReadOrRenewLease();
+                ReadOrRenewLease(requestorIdentity);
             }
 
             return lastKnownLease;
         }
 
-        private void ReadOrRenewLease()
+        private void ReadOrRenewLease(byte[] requestorIdentity)
         {
             var now = DateTime.UtcNow;
 
-            var lease = AсquireOrLearnLease(ballotGenerator.New(instance.GetIdentity()), now);
+            var lease = AсquireOrLearnLease(ballotGenerator.New(instance.GetIdentity()), requestorIdentity, now);
 
             lastKnownLease = lease;
         }
 
-        private Lease AсquireOrLearnLease(Ballot ballot, DateTime now)
+        private Lease AсquireOrLearnLease(Ballot ballot, byte[] requestorIdentity, DateTime now)
         {
             var read = register.Read(ballot);
             if (read.TxOutcome == TxOutcome.Commit)
@@ -78,13 +78,13 @@ namespace kino.LeaseProvider
                     LogAwake();
 
                     // TODO: Add recursion exit condition
-                    return AсquireOrLearnLease(ballotGenerator.New(instance.GetIdentity()), DateTime.UtcNow);
+                    return AсquireOrLearnLease(ballotGenerator.New(instance.GetIdentity()), requestorIdentity, DateTime.UtcNow);
                 }
 
                 if (LeaseNullOrExpired(lease, now) || IsLeaseOwner(lease))
                 {
                     LogLeaseProlonged(lease);
-                    lease = new Lease(localNode.SocketIdentity, now + config.MaxLeaseTimeSpan, Interlocked.Exchange(ref ownerPayload, ownerPayload));
+                    lease = new Lease(localNode.SocketIdentity, now + config.MaxLeaseTimeSpan, requestorIdentity);
                 }
 
                 var write = register.Write(ballot, lease);

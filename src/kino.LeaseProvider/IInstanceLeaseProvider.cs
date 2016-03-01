@@ -4,6 +4,6 @@ namespace kino.LeaseProvider
 {
     public interface IInstanceLeaseProvider
     {
-        Lease GetLease(byte[] ownerPayload);
+        Lease GetLease(byte[] requestorIdentity);
     }
 }

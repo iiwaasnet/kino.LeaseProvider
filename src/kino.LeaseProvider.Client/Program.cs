@@ -6,6 +6,7 @@ using kino.Actors;
 using kino.Client;
 using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
+using kino.Core.Framework;
 using kino.Core.Messaging;
 using kino.Core.Sockets;
 using kino.LeaseProvider.Messages;
@@ -36,7 +37,7 @@ namespace kino.LeaseProvider.Client
 
             // Host Actors
             var actorHostManager = componentResolver.BuildActorHostManager(container.Resolve<RouterConfiguration>(),
-                                                                          container.Resolve<ILogger>());
+                                                                           container.Resolve<ILogger>());
             foreach (var actor in container.Resolve<IEnumerable<IActor>>())
             {
                 actorHostManager.AssignActor(actor);
@@ -45,20 +46,23 @@ namespace kino.LeaseProvider.Client
             Thread.Sleep(TimeSpan.FromSeconds(5));
             Console.WriteLine($"Client is running... {DateTime.Now}");
 
+            var run = 0;
+
             while (true)
             {
+                var ownerIdentity = Guid.NewGuid().ToByteArray();
                 var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
-                {
-                    Instance = "A",
-                    LeaseTimeSpan = TimeSpan.FromSeconds(5),
-                    RequestTimeout = TimeSpan.FromSeconds(1),
-                    Requestor = new Messages.Node
-                    {
-                        Identity = Guid.NewGuid().ToByteArray(),
-                        Uri = "tpc://localhost"
-                    }
-                });
-                request.TraceOptions = MessageTraceOptions.None;
+                                                             {
+                                                                 Instance = (run++ % 2 == 0) ? "A" : "B",
+                                                                 LeaseTimeSpan = TimeSpan.FromSeconds(5),
+                                                                 RequestTimeout = TimeSpan.FromSeconds(1),
+                                                                 Requestor = new Messages.Node
+                                                                             {
+                                                                                 Identity = ownerIdentity,
+                                                                                 Uri = "tpc://localhost"
+                                                                             }
+                                                             });
+                request.TraceOptions = MessageTraceOptions.Routing;
                 var callbackPoint = CallbackPoint.Create<LeaseResponseMessage>();
                 var promise = messageHub.EnqueueRequest(request, callbackPoint);
                 var waitTimeout = TimeSpan.FromSeconds(5);
@@ -66,19 +70,23 @@ namespace kino.LeaseProvider.Client
                 {
                     var response = promise.GetResponse().Result.GetPayload<LeaseResponseMessage>();
 
-                    Console.WriteLine($"{DateTime.UtcNow} " +
-                                      $"Aquired: {response.LeaseAquired} " +
-                                      $"Instance: {response.Lease?.Instance} " +
-                                      $"Owner: {response.Lease?.Owner.Uri} " +
-                                      $"ExpiresAt: {response.Lease?.ExpiresAt}");
+                    if (response.LeaseAquired)
+                    {
+                        Console.WriteLine($"{DateTime.UtcNow} " +
+                                          $"Aquired: {response.LeaseAquired} " +
+                                          $"Instance: {response.Lease?.Instance} " +
+                                          $"Owner: {response.Lease?.Owner.Uri} " +
+                                          $"OwnerIdentity: {response.Lease?.Owner.Identity.GetString()} " +
+                                          $"RequestorIdentity: {ownerIdentity.GetString()} " +
+                                          $"ExpiresAt: {response.Lease?.ExpiresAt}");
+                    }
                 }
                 else
                 {
                     Console.WriteLine($"Call timed out after {waitTimeout.TotalSeconds} sec.");
                 }
-                Thread.Sleep(TimeSpan.FromSeconds(2));
+                Thread.Sleep(TimeSpan.FromMilliseconds(2000));
             }
-            
 
             Console.ReadLine();
             messageHub.Stop();

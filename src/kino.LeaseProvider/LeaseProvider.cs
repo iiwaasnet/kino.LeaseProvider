@@ -36,6 +36,7 @@ namespace kino.LeaseProvider
         {
             intercomMessageHub.Start();
             CreateInstanceLeaseProvider(new Instance("A"), TimeSpan.FromSeconds(5));
+            CreateInstanceLeaseProvider(new Instance("B"), TimeSpan.FromSeconds(5));
         }
 
         public void Stop()
