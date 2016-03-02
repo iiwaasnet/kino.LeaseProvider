@@ -127,6 +127,7 @@
     <Compile Include="Instance.cs" />
     <Compile Include="InstanceLeaseProvider.Logging.cs" />
     <Compile Include="InstanceLeaseProvider.cs" />
+    <Compile Include="InstanceLeaseProviderBag.cs" />
     <Compile Include="InstanceRoundBasedRegister.Logging.cs" />
     <Compile Include="InstanceRoundBasedRegister.cs" />
     <Compile Include="LeaseProvider.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="ServiceHost.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ThreadUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

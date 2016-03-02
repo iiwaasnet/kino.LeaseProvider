@@ -5,13 +5,13 @@ namespace kino.LeaseProvider
 {
     public class Instance : IEquatable<Instance>
     {
-        private readonly string identity;
-        private readonly byte[] byteIdentity;
+        private readonly int hashCode;
 
-        public Instance(string identity)
+        public Instance(string identity, TimeSpan maxAllowedLeaseTimeSpan)
         {
-            this.identity = identity;
-            byteIdentity = identity.GetBytes();
+            MaxAllowedLeaseTimeSpan = maxAllowedLeaseTimeSpan;
+            Identity = identity.GetBytes();
+            hashCode = Identity?.GetHashCode() ?? 0;
         }
 
         public bool Equals(Instance other)
@@ -24,7 +24,7 @@ namespace kino.LeaseProvider
             {
                 return true;
             }
-            return string.Equals(identity, other.identity);
+            return Equals(Identity, other.Identity);
         }
 
         public override bool Equals(object obj)
@@ -45,9 +45,7 @@ namespace kino.LeaseProvider
         }
 
         public override int GetHashCode()
-        {
-            return identity?.GetHashCode() ?? 0;
-        }
+            => hashCode;
 
         public static bool operator ==(Instance left, Instance right)
         {
@@ -59,10 +57,8 @@ namespace kino.LeaseProvider
             return !Equals(left, right);
         }
 
-        public string GetStringIdentity()
-            => identity;
+        public byte[] Identity { get; }
 
-        public byte[] GetIdentity()
-            => byteIdentity;
+        public TimeSpan MaxAllowedLeaseTimeSpan { get; }
     }
 }

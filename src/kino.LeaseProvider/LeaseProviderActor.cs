@@ -29,12 +29,13 @@ namespace kino.LeaseProvider
         {
             var payload = message.GetPayload<LeaseRequestMessage>();
 
-            var lease = leaseProvider.GetLease(new Instance(payload.Instance),
+            var lease = leaseProvider.GetLease(new Instance(payload.Instance, payload.MaxAllowedLeaseTimeSpan),
                                                payload.LeaseTimeSpan,
-                                               messageSerializer.Serialize(payload.Requestor),
-                                               payload.RequestTimeout);
+                                               messageSerializer.Serialize(payload.Requestor));
 
-            var leaseOwner = messageSerializer.Deserialize<Node>(lease.OwnerPayload);
+            var leaseOwner = (lease != null)
+                                 ? messageSerializer.Deserialize<Node>(lease.OwnerPayload)
+                                 : null;
 
             var requestorWonTheLease = RequestorWonTheLease(payload.Requestor, leaseOwner);
 
@@ -55,10 +56,10 @@ namespace kino.LeaseProvider
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
         {
-            logger.Trace($"Requestor URI: {requestor.Uri} LeaseOwner URI: {leaseOwner.Uri} " +
-                         $"Requestor Identity: {requestor.Identity.GetString()} LeaseOwner Identity {leaseOwner.Identity.GetString()}");
+            //logger.Trace($"Requestor URI: {requestor.Uri} LeaseOwner URI: {leaseOwner?.Uri} " +
+            //             $"Requestor Identity: {requestor.Identity.GetString()} LeaseOwner Identity {leaseOwner?.Identity.GetString()}");
 
-            return requestor.Uri == leaseOwner.Uri && Unsafe.Equals(requestor.Identity, leaseOwner.Identity);
+            return requestor.Uri == leaseOwner?.Uri && Unsafe.Equals(requestor.Identity, leaseOwner?.Identity);
         }
     }
 }
