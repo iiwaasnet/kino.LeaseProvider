@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
 
 namespace kino.LeaseProvider.Configuration

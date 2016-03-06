@@ -7,9 +7,8 @@ namespace kino.LeaseProvider
     {
         private readonly int hashCode;
 
-        public Instance(string identity, TimeSpan maxAllowedLeaseTimeSpan)
+        public Instance(string identity)
         {
-            MaxAllowedLeaseTimeSpan = maxAllowedLeaseTimeSpan;
             Identity = identity.GetBytes();
             hashCode = Identity?.GetHashCode() ?? 0;
         }
@@ -58,7 +57,5 @@ namespace kino.LeaseProvider
         }
 
         public byte[] Identity { get; }
-
-        public TimeSpan MaxAllowedLeaseTimeSpan { get; }
     }
 }

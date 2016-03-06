@@ -76,9 +76,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstanceLeaseProviderCreationRequestMessage.cs" />
+    <Compile Include="InternalCreateLeaseProviderInstanceRequestMessage.cs" />
+    <Compile Include="CreateLeaseProviderInstanceResponseMessage.cs" />
+    <Compile Include="CreateLeaseProviderInstanceRequestMessage.cs" />
+    <Compile Include="IdentityBuilder.cs" />
     <Compile Include="Lease.cs" />
-    <Compile Include="InternalLeaseRequestMessage.cs" />
     <Compile Include="LeaseResponseMessage.cs" />
     <Compile Include="LeaseRequestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

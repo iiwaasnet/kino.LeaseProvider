@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Autofac;
 using kino.Actors;
@@ -10,6 +11,7 @@ using kino.Core.Framework;
 using kino.Core.Messaging;
 using kino.Core.Sockets;
 using kino.LeaseProvider.Messages;
+using Node = kino.LeaseProvider.Messages.Node;
 
 namespace kino.LeaseProvider.Client
 {
@@ -46,6 +48,10 @@ namespace kino.LeaseProvider.Client
             Thread.Sleep(TimeSpan.FromSeconds(5));
             Console.WriteLine($"Client is running... {DateTime.Now}");
 
+            var instances = new[] {"A", "B"};
+
+            CreateLeaseProviderInstances(instances, messageHub);
+
             var run = 0;
 
             while (true)
@@ -53,16 +59,15 @@ namespace kino.LeaseProvider.Client
                 var ownerIdentity = Guid.NewGuid().ToByteArray();
                 var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
                                                              {
-                                                                 Instance = (run++ % 2 == 0) ? "A" : "B",
+                                                                 Instance = (run++ % 2 == 0) ? instances[0] : instances[1],
                                                                  LeaseTimeSpan = TimeSpan.FromSeconds(5),
-                                                                 RequestTimeout = TimeSpan.FromSeconds(1),
-                                                                 Requestor = new Messages.Node
+                                                                 Requestor = new Node
                                                                              {
                                                                                  Identity = ownerIdentity,
                                                                                  Uri = "tpc://localhost"
                                                                              }
                                                              });
-                request.TraceOptions = MessageTraceOptions.Routing;
+                request.TraceOptions = MessageTraceOptions.None;
                 var callbackPoint = CallbackPoint.Create<LeaseResponseMessage>();
                 var promise = messageHub.EnqueueRequest(request, callbackPoint);
                 var waitTimeout = TimeSpan.FromSeconds(5);
@@ -94,6 +99,22 @@ namespace kino.LeaseProvider.Client
             container.Dispose();
 
             Console.WriteLine("Client stopped.");
+        }
+
+        private static void CreateLeaseProviderInstances(string[] instances, IMessageHub messageHub)
+        {
+            foreach (var instance in instances)
+            {
+                var message = Message.CreateFlowStartMessage(new CreateLeaseProviderInstanceRequestMessage {Instance = instance});
+                var callback = CallbackPoint.Create<CreateLeaseProviderInstanceResponseMessage>();
+                var results = new List<CreateLeaseProviderInstanceResponseMessage>();
+                using (var promise = messageHub.EnqueueRequest(message, callback))
+                {
+                    results.Add(promise.GetResponse().Result.GetPayload<CreateLeaseProviderInstanceResponseMessage>());
+                }
+
+                Thread.Sleep(results.Max(r => r.ActivationWaitTime));
+            }
         }
     }
 }

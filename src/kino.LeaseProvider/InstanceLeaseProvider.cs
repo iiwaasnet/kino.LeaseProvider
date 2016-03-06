@@ -37,20 +37,20 @@ namespace kino.LeaseProvider
         {
             if (LeaseNullOrExpired(lastKnownLease))
             {
-                ReadOrRenewLease(requestorIdentity);
+                ReadOrRenewLease(requestorIdentity, leaseTimeSpan);
             }
 
             return lastKnownLease;
         }
 
-        private void ReadOrRenewLease(byte[] requestorIdentity)
+        private void ReadOrRenewLease(byte[] requestorIdentity, TimeSpan leaseTimeSpan)
         {
-            var lease = AсquireOrLearnLease(ballotGenerator.New(instance.Identity), requestorIdentity);
+            var lease = AсquireOrLearnLease(ballotGenerator.New(instance.Identity), requestorIdentity, leaseTimeSpan);
 
             lastKnownLease = lease;
         }
 
-        private Lease AсquireOrLearnLease(Ballot ballot, byte[] requestorIdentity)
+        private Lease AсquireOrLearnLease(Ballot ballot, byte[] requestorIdentity, TimeSpan leaseTimeSpan)
         {
             var read = register.Read(ballot);
             if (read.TxOutcome == TxOutcome.Commit)
@@ -59,18 +59,18 @@ namespace kino.LeaseProvider
                 if (LeaseIsNotSafelyExpired(lease))
                 {
                     LogStartSleep();
-                    Sleep(leaseConfig.ClockDrift);
+                    leaseConfig.ClockDrift.Sleep();
                     LogAwake();
 
                     // TODO: Add recursion exit condition
-                    return AсquireOrLearnLease(ballotGenerator.New(instance.Identity), requestorIdentity);
+                    return AсquireOrLearnLease(ballotGenerator.New(instance.Identity), requestorIdentity, leaseTimeSpan);
                 }
 
                 if (LeaseNullOrExpired(lease) || IsLeaseOwner(lease))
                 {
                     var now = DateTime.UtcNow;
                     LogLeaseProlonged(lease);
-                    lease = new Lease(localNode.SocketIdentity, now + leaseConfig.MaxLeaseTimeSpan, requestorIdentity);
+                    lease = new Lease(localNode.SocketIdentity, now + leaseTimeSpan, requestorIdentity);
                 }
 
                 var write = register.Write(ballot, lease);

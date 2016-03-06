@@ -1,24 +1,17 @@
-﻿using System;
-using kino.Core.Framework;
+﻿using kino.Core.Framework;
 using kino.Core.Messaging;
 using ProtoBuf;
 
 namespace kino.LeaseProvider.Messages
 {
     [ProtoContract]
-    public class LeaseRequestMessage : Payload
+    public class InternalCreateLeaseProviderInstanceRequestMessage : Payload
     {
         private static readonly byte[] MessageVersion = "1.0".GetBytes();
-        private static readonly byte[] MessageIdentity = "LEASEREQ".BuildFullIdentity();
+        private static readonly byte[] MessageIdentity = "INTCREATELPINSTREQ".BuildFullIdentity();
 
         [ProtoMember(1)]
         public string Instance { get; set; }
-
-        [ProtoMember(2)]
-        public Node Requestor { get; set; }
-
-        [ProtoMember(3)]
-        public TimeSpan LeaseTimeSpan { get; set; }
 
         public override byte[] Version => MessageVersion;
 

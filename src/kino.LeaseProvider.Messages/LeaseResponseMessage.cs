@@ -8,7 +8,7 @@ namespace kino.LeaseProvider.Messages
     public class LeaseResponseMessage : Payload
     {
         private static readonly byte[] MessageVersion = "1.0".GetBytes();
-        private static readonly byte[] MessageIdentity = "LP.LEASERESP".GetBytes();
+        private static readonly byte[] MessageIdentity = "LEASERESP".BuildFullIdentity();
 
         [ProtoMember(1)]
         public bool LeaseAquired { get; set; }

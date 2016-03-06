@@ -4,6 +4,7 @@ using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
+using LeaseConfiguration = kino.LeaseProvider.Configuration.LeaseConfiguration;
 
 namespace kino.LeaseProvider
 {
@@ -14,7 +15,7 @@ namespace kino.LeaseProvider
         private readonly ISynodConfiguration synodConfig;
         private readonly LeaseConfiguration leaseConfig;
         private readonly ILogger logger;
-        private readonly ConcurrentDictionary<Instance, InstanceLeaseProviderBag> leaseProviders;
+        private readonly ConcurrentDictionary<Instance, InstanceLeaseProviderHolder> leaseProviders;
         private readonly object @lock = new object();
 
         public LeaseProvider(IIntercomMessageHub intercomMessageHub,
@@ -30,14 +31,14 @@ namespace kino.LeaseProvider
             this.synodConfig = synodConfig;
             this.leaseConfig = leaseConfig;
             this.logger = logger;
-            leaseProviders = new ConcurrentDictionary<Instance, InstanceLeaseProviderBag>();
+            leaseProviders = new ConcurrentDictionary<Instance, InstanceLeaseProviderHolder>();
         }
 
         public void Start()
         {
             intercomMessageHub.Start();
-            GetOrCreateInstanceLeaseProvider(new Instance("A", TimeSpan.FromSeconds(5)));
-            GetOrCreateInstanceLeaseProvider(new Instance("B", TimeSpan.FromSeconds(5)));
+            RegisterInstanceLeaseProvider(new Instance("A"));
+            RegisterInstanceLeaseProvider(new Instance("B"));
         }
 
         public void Stop()
@@ -47,72 +48,56 @@ namespace kino.LeaseProvider
 
         public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] requestorIdentity)
         {
-            ValidateLeaseTimeSpan(instance, leaseTimeSpan);
+            ValidateLeaseTimeSpan(leaseTimeSpan);
 
-            var leaseProvider = GetOrCreateInstanceLeaseProvider(instance);
-
-            return leaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
-        }
-
-        public void EnsureInstanceLeaseProviderExists(Instance instance)
-        {
-            GetOrCreateInstanceLeaseProvider(instance);
-        }
-
-        private IInstanceLeaseProvider GetOrCreateInstanceLeaseProvider(Instance instance)
-        {
-            var providerCreated = false;
-            var leaseProviderBag = leaseProviders.GetOrAdd(instance, i => CreateInstanceLeaseProviderBag(i, out providerCreated));
-
-            if (providerCreated)
+            InstanceLeaseProviderHolder leaseProviderHolder;
+            if (!leaseProviders.TryGetValue(instance, out leaseProviderHolder))
             {
-                instance.MaxAllowedLeaseTimeSpan.Sleep();
+                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} is not registered!");
             }
-            else
+            if (leaseProviderHolder.InstanceLeaseProvider == null)
             {
-                if (instance.MaxAllowedLeaseTimeSpan != leaseProviderBag.MaxAllowedLeaseTimeSpan)
-                {
-                    throw new ArgumentException($"{nameof(instance.MaxAllowedLeaseTimeSpan)} value {instance.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms " +
-                                                $"is not equal to {leaseProviderBag.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms " +
-                                                $"of existing Instance {instance.Identity.GetString()}");
-                }
+                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} will be available " +
+                                    $"in at most {leaseConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms.");
             }
 
-            return leaseProviderBag.InstanceLeaseProvider;
+            return leaseProviderHolder.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
         }
 
-        private InstanceLeaseProviderBag CreateInstanceLeaseProviderBag(Instance instance, out bool created)
+        public RegistrationResult RegisterInstanceLeaseProvider(Instance instance)
         {
-            created = true;
-            return new InstanceLeaseProviderBag
+            var leaseProvider = leaseProviders.GetOrAdd(instance, CreateInstanceLeaseProviderHolder);
+
+            return new RegistrationResult
                    {
-                       InstanceLeaseProvider = new InstanceLeaseProvider(instance,
-                                                                         new InstanceRoundBasedRegister(instance,
-                                                                                                        intercomMessageHub,
-                                                                                                        ballotGenerator,
-                                                                                                        synodConfig,
-                                                                                                        leaseConfig,
-                                                                                                        logger),
-                                                                         ballotGenerator,
-                                                                         leaseConfig,
-                                                                         synodConfig,
-                                                                         logger),
-                       MaxAllowedLeaseTimeSpan = instance.MaxAllowedLeaseTimeSpan
+                       ActivationWaitTime = leaseProvider.InstanceLeaseProvider != null
+                                                ? TimeSpan.Zero
+                                                : leaseConfig.MaxAllowedLeaseTimeSpan
                    };
         }
 
-        private void ValidateLeaseTimeSpan(Instance instance, TimeSpan leaseTimeSpan)
+        private InstanceLeaseProviderHolder CreateInstanceLeaseProviderHolder(Instance instance)
+            => new InstanceLeaseProviderHolder(instance,
+                                               intercomMessageHub,
+                                               ballotGenerator,
+                                               synodConfig,
+                                               new Consensus.Configuration.LeaseConfiguration
+                                               {
+                                                   ClockDrift = leaseConfig.ClockDrift,
+                                                   MaxLeaseTimeSpan = leaseConfig.MinAllowedLeaseTimeSpan,
+                                                   NodeResponseTimeout = leaseConfig.NodeResponseTimeout,
+                                                   MessageRoundtrip = leaseConfig.MessageRoundtrip
+                                               },
+                                               logger);
+
+        private void ValidateLeaseTimeSpan(TimeSpan leaseTimeSpan)
         {
-            if (leaseTimeSpan <= leaseConfig.MaxLeaseTimeSpan)
+            if (leaseTimeSpan < leaseConfig.MinAllowedLeaseTimeSpan
+                || leaseTimeSpan > leaseConfig.MaxAllowedLeaseTimeSpan)
             {
                 throw new ArgumentException($"Requested {nameof(leaseTimeSpan)} ({leaseTimeSpan.TotalMilliseconds} ms) " +
-                                            $"should be longer than min allowed {leaseConfig.MaxLeaseTimeSpan.TotalMilliseconds} ms!");
-            }
-            if (leaseTimeSpan >= instance.MaxAllowedLeaseTimeSpan)
-            {
-                throw new ArgumentException($"Requested {nameof(leaseTimeSpan)} ({leaseTimeSpan.TotalMilliseconds} ms) " +
-                                            $"should be shorter than max allowed {instance.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms " +
-                                            $"for {nameof(instance.Identity)} {instance.Identity.GetString()}!");
+                                            $"is not in {leaseConfig.MinAllowedLeaseTimeSpan.TotalMilliseconds}-" +
+                                            $"{leaseConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms range!");
             }
         }
 
@@ -120,18 +105,18 @@ namespace kino.LeaseProvider
         {
             if (config.NodeResponseTimeout.TotalMilliseconds * 2 > config.MessageRoundtrip.TotalMilliseconds)
             {
-                throw new Exception("NodeResponseTimeout[{config.NodeResponseTimeout.TotalMilliseconds} msec] " +
+                throw new Exception($"{nameof(config.NodeResponseTimeout)}[{config.NodeResponseTimeout.TotalMilliseconds} msec] " +
                                     "should be at least 2 times shorter than " +
-                                    "MessageRoundtrip[{config.MessageRoundtrip.TotalMilliseconds} msec]");
+                                    $"{nameof(config.MessageRoundtrip)}[{config.MessageRoundtrip.TotalMilliseconds} msec]");
             }
-            if (config.MaxLeaseTimeSpan
+            if (config.MinAllowedLeaseTimeSpan
                 - TimeSpan.FromTicks(config.MessageRoundtrip.Ticks * 2)
                 - config.ClockDrift <= TimeSpan.Zero)
             {
-                throw new Exception($"MaxLeaseTimeSpan[{config.MaxLeaseTimeSpan.TotalMilliseconds} msec] " +
+                throw new Exception($"{nameof(config.MinAllowedLeaseTimeSpan)}[{config.MinAllowedLeaseTimeSpan.TotalMilliseconds} msec] " +
                                     "should be longer than " +
-                                    $"(2 * MessageRoundtrip[{config.MessageRoundtrip.TotalMilliseconds} msec] " +
-                                    $"+ ClockDrift[{config.ClockDrift.TotalMilliseconds} msec])");
+                                    $"(2 * {nameof(config.MessageRoundtrip)}[{config.MessageRoundtrip.TotalMilliseconds} msec] " +
+                                    $"+ {nameof(config.ClockDrift)}[{config.ClockDrift.TotalMilliseconds} msec])");
             }
         }
     }

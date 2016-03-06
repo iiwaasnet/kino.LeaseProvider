@@ -116,6 +116,7 @@
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Configuration\KinoConfiguration.cs" />
+    <Compile Include="Configuration\LeaseConfiguration.cs" />
     <Compile Include="Configuration\LeaseProviderConfiguration.cs" />
     <Compile Include="Configuration\RendezvousNode.cs" />
     <Compile Include="Configuration\SynodConfiguration.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Instance.cs" />
     <Compile Include="InstanceLeaseProvider.Logging.cs" />
     <Compile Include="InstanceLeaseProvider.cs" />
-    <Compile Include="InstanceLeaseProviderBag.cs" />
+    <Compile Include="InstanceLeaseProviderHolder.cs" />
     <Compile Include="InstanceRoundBasedRegister.Logging.cs" />
     <Compile Include="InstanceRoundBasedRegister.cs" />
     <Compile Include="LeaseProvider.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="MainModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationResult.cs" />
     <Compile Include="ServiceHost.cs">
       <SubType>Component</SubType>
     </Compile>

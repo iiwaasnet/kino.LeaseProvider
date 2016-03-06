@@ -1,5 +1,3 @@
-using kino.Consensus.Configuration;
-
 namespace kino.LeaseProvider.Configuration
 {
     public class LeaseProviderConfiguration

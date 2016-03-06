@@ -9,6 +9,7 @@ using kino.Core.Messaging;
 using kino.Core.Sockets;
 using kino.LeaseProvider.Configuration;
 using TypedConfigProvider;
+using LeaseConfiguration = kino.LeaseProvider.Configuration.LeaseConfiguration;
 using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
 
 namespace kino.LeaseProvider
