@@ -10,7 +10,7 @@ namespace kino.LeaseProvider
         public Instance(string identity)
         {
             Identity = identity.GetBytes();
-            hashCode = Identity?.GetHashCode() ?? 0;
+            hashCode = Identity.ComputeHash();
         }
 
         public bool Equals(Instance other)
@@ -23,7 +23,7 @@ namespace kino.LeaseProvider
             {
                 return true;
             }
-            return Equals(Identity, other.Identity);
+            return Unsafe.Equals(other.Identity, Identity);
         }
 
         public override bool Equals(object obj)

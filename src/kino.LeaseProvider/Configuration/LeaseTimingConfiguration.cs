@@ -2,7 +2,7 @@
 
 namespace kino.LeaseProvider.Configuration
 {
-    public class LeaseConfiguration
+    public class LeaseTimingConfiguration
     {
         public TimeSpan MinAllowedLeaseTimeSpan { get; set; }
 

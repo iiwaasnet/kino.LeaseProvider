@@ -116,7 +116,7 @@
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Configuration\KinoConfiguration.cs" />
-    <Compile Include="Configuration\LeaseConfiguration.cs" />
+    <Compile Include="Configuration\LeaseTimingConfiguration.cs" />
     <Compile Include="Configuration\LeaseProviderConfiguration.cs" />
     <Compile Include="Configuration\RendezvousNode.cs" />
     <Compile Include="Configuration\SynodConfiguration.cs" />

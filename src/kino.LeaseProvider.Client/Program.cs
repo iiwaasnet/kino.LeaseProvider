@@ -101,19 +101,30 @@ namespace kino.LeaseProvider.Client
             Console.WriteLine("Client stopped.");
         }
 
-        private static void CreateLeaseProviderInstances(string[] instances, IMessageHub messageHub)
+        private static void CreateLeaseProviderInstances(IEnumerable<string> instances, IMessageHub messageHub)
         {
-            foreach (var instance in instances)
+            if (instances.Any())
             {
-                var message = Message.CreateFlowStartMessage(new CreateLeaseProviderInstanceRequestMessage {Instance = instance});
-                var callback = CallbackPoint.Create<CreateLeaseProviderInstanceResponseMessage>();
                 var results = new List<CreateLeaseProviderInstanceResponseMessage>();
-                using (var promise = messageHub.EnqueueRequest(message, callback))
+                foreach (var instance in instances)
                 {
-                    results.Add(promise.GetResponse().Result.GetPayload<CreateLeaseProviderInstanceResponseMessage>());
-                }
+                    var message = Message.CreateFlowStartMessage(new CreateLeaseProviderInstanceRequestMessage {Instance = instance});
+                    message.TraceOptions = MessageTraceOptions.Routing;
+                    var callback = CallbackPoint.Create<CreateLeaseProviderInstanceResponseMessage>();
 
-                Thread.Sleep(results.Max(r => r.ActivationWaitTime));
+                    using (var promise = messageHub.EnqueueRequest(message, callback))
+                    {
+                        results.Add(promise.GetResponse().Result.GetPayload<CreateLeaseProviderInstanceResponseMessage>());
+                    }
+                }
+                var activationWaitTime = results.Max(r => r.ActivationWaitTime);
+
+                Console.WriteLine($"Waiting {activationWaitTime.TotalSeconds} sec before LeaseProvider Instances are active...");
+
+                if (activationWaitTime > TimeSpan.Zero)
+                {
+                    Thread.Sleep(activationWaitTime);
+                }
             }
         }
     }

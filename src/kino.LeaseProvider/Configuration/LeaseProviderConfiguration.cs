@@ -4,6 +4,6 @@ namespace kino.LeaseProvider.Configuration
     {
         public SynodConfiguration Synod { get; set; }
 
-        public LeaseConfiguration Lease { get; set; }
+        public LeaseTimingConfiguration LeaseTiming { get; set; }
     }
 }

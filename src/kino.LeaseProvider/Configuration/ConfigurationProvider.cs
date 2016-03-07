@@ -32,10 +32,19 @@ namespace kino.LeaseProvider.Configuration
                    RunAsStandalone = appConfig.Kino.RunAsStandalone
                };
 
-        public LeaseConfiguration GetLeaseConfiguration()
-            => appConfig.LeaseProvider.Lease;
+        public LeaseTimingConfiguration GetLeaseTimingConfiguration()
+            => appConfig.LeaseProvider.LeaseTiming;
 
         public SynodConfiguration GetSynodConfiguration()
             => appConfig.LeaseProvider.Synod;
+
+        public LeaseConfiguration GetLeaseConfiguration()
+            => new LeaseConfiguration
+               {
+                   ClockDrift = appConfig.LeaseProvider.LeaseTiming.ClockDrift,
+                   MaxLeaseTimeSpan = appConfig.LeaseProvider.LeaseTiming.MinAllowedLeaseTimeSpan,
+                   MessageRoundtrip = appConfig.LeaseProvider.LeaseTiming.MessageRoundtrip,
+                   NodeResponseTimeout = appConfig.LeaseProvider.LeaseTiming.NodeResponseTimeout
+               };
     }
 }

@@ -9,7 +9,6 @@ using kino.Core.Messaging;
 using kino.Core.Sockets;
 using kino.LeaseProvider.Configuration;
 using TypedConfigProvider;
-using LeaseConfiguration = kino.LeaseProvider.Configuration.LeaseConfiguration;
 using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
 
 namespace kino.LeaseProvider
@@ -113,6 +112,10 @@ namespace kino.LeaseProvider
 
             builder.Register(c => c.Resolve<IConfigurationProvider>().GetSynodConfiguration())
                    .As<Configuration.SynodConfiguration>()
+                   .SingleInstance();
+
+            builder.Register(c => c.Resolve<IConfigurationProvider>().GetLeaseTimingConfiguration())
+                   .As<LeaseTimingConfiguration>()
                    .SingleInstance();
 
             builder.Register(c => c.Resolve<IConfigurationProvider>().GetLeaseConfiguration())

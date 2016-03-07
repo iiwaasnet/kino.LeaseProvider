@@ -4,7 +4,7 @@ using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
-using LeaseConfiguration = kino.LeaseProvider.Configuration.LeaseConfiguration;
+using kino.LeaseProvider.Configuration;
 
 namespace kino.LeaseProvider
 {
@@ -13,23 +13,25 @@ namespace kino.LeaseProvider
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
         private readonly ISynodConfiguration synodConfig;
-        private readonly LeaseConfiguration leaseConfig;
+        private readonly LeaseTimingConfiguration leaseTimingConfig;
+        private readonly LeaseConfiguration leaseConfiguration;
         private readonly ILogger logger;
         private readonly ConcurrentDictionary<Instance, InstanceLeaseProviderHolder> leaseProviders;
-        private readonly object @lock = new object();
 
         public LeaseProvider(IIntercomMessageHub intercomMessageHub,
                              IBallotGenerator ballotGenerator,
                              ISynodConfiguration synodConfig,
-                             LeaseConfiguration leaseConfig,
+                             LeaseTimingConfiguration leaseTimingConfig,
+                             LeaseConfiguration leaseConfiguration,
                              ILogger logger)
         {
-            ValidateConfiguration(leaseConfig);
+            ValidateConfiguration(leaseTimingConfig);
 
             this.intercomMessageHub = intercomMessageHub;
             this.ballotGenerator = ballotGenerator;
             this.synodConfig = synodConfig;
-            this.leaseConfig = leaseConfig;
+            this.leaseTimingConfig = leaseTimingConfig;
+            this.leaseConfiguration = leaseConfiguration;
             this.logger = logger;
             leaseProviders = new ConcurrentDictionary<Instance, InstanceLeaseProviderHolder>();
         }
@@ -37,8 +39,8 @@ namespace kino.LeaseProvider
         public void Start()
         {
             intercomMessageHub.Start();
-            RegisterInstanceLeaseProvider(new Instance("A"));
-            RegisterInstanceLeaseProvider(new Instance("B"));
+            //RegisterInstanceLeaseProvider(new Instance("A"));
+            //RegisterInstanceLeaseProvider(new Instance("B"));
         }
 
         public void Stop()
@@ -58,7 +60,7 @@ namespace kino.LeaseProvider
             if (leaseProviderHolder.InstanceLeaseProvider == null)
             {
                 throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} will be available " +
-                                    $"in at most {leaseConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms.");
+                                    $"in at most {leaseTimingConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms.");
             }
 
             return leaseProviderHolder.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
@@ -68,12 +70,17 @@ namespace kino.LeaseProvider
         {
             var leaseProvider = leaseProviders.GetOrAdd(instance, CreateInstanceLeaseProviderHolder);
 
-            return new RegistrationResult
-                   {
-                       ActivationWaitTime = leaseProvider.InstanceLeaseProvider != null
-                                                ? TimeSpan.Zero
-                                                : leaseConfig.MaxAllowedLeaseTimeSpan
-                   };
+            var res = new RegistrationResult
+                      {
+                          ActivationWaitTime = leaseProvider.InstanceLeaseProvider != null
+                                                   ? TimeSpan.Zero
+                                                   : leaseTimingConfig.MaxAllowedLeaseTimeSpan
+                      };
+
+            logger.Trace($"Requested LeaseProvider for Instance {instance.Identity.GetString()} " +
+                         $"will be active in {TimeSpan.Zero.TotalSeconds} sec.");
+
+            return res;
         }
 
         private InstanceLeaseProviderHolder CreateInstanceLeaseProviderHolder(Instance instance)
@@ -81,27 +88,21 @@ namespace kino.LeaseProvider
                                                intercomMessageHub,
                                                ballotGenerator,
                                                synodConfig,
-                                               new Consensus.Configuration.LeaseConfiguration
-                                               {
-                                                   ClockDrift = leaseConfig.ClockDrift,
-                                                   MaxLeaseTimeSpan = leaseConfig.MinAllowedLeaseTimeSpan,
-                                                   NodeResponseTimeout = leaseConfig.NodeResponseTimeout,
-                                                   MessageRoundtrip = leaseConfig.MessageRoundtrip
-                                               },
+                                               leaseConfiguration,
                                                logger);
 
         private void ValidateLeaseTimeSpan(TimeSpan leaseTimeSpan)
         {
-            if (leaseTimeSpan < leaseConfig.MinAllowedLeaseTimeSpan
-                || leaseTimeSpan > leaseConfig.MaxAllowedLeaseTimeSpan)
+            if (leaseTimeSpan < leaseTimingConfig.MinAllowedLeaseTimeSpan
+                || leaseTimeSpan > leaseTimingConfig.MaxAllowedLeaseTimeSpan)
             {
                 throw new ArgumentException($"Requested {nameof(leaseTimeSpan)} ({leaseTimeSpan.TotalMilliseconds} ms) " +
-                                            $"is not in {leaseConfig.MinAllowedLeaseTimeSpan.TotalMilliseconds}-" +
-                                            $"{leaseConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms range!");
+                                            $"is not in {leaseTimingConfig.MinAllowedLeaseTimeSpan.TotalMilliseconds}-" +
+                                            $"{leaseTimingConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms range!");
             }
         }
 
-        private void ValidateConfiguration(LeaseConfiguration config)
+        private void ValidateConfiguration(LeaseTimingConfiguration config)
         {
             if (config.NodeResponseTimeout.TotalMilliseconds * 2 > config.MessageRoundtrip.TotalMilliseconds)
             {
