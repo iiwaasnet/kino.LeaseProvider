@@ -56,6 +56,8 @@ namespace kino.LeaseProvider
             nackReadStream = listener.Where(IsLeaseNackReadMessage);
             ackWriteStream = listener.Where(IsLeaseAckWriteMessage);
             nackWriteStream = listener.Where(IsLeaseNackWriteMessage);
+
+            logger.Info($"{instance.Identity.GetString()}-InstanceRoundBasedRegister created");
         }
 
         private bool IsLeaseNackWriteMessage(IMessage message)

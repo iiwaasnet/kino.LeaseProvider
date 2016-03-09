@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
@@ -31,6 +30,8 @@ namespace kino.LeaseProvider
             this.ballotGenerator = ballotGenerator;
             this.leaseConfig = leaseConfig;
             this.logger = logger;
+
+            logger.Info($"{instance.Identity.GetString()}-InstanceLeaseProvider created");
         }
 
         public Lease GetLease(byte[] requestorIdentity, TimeSpan leaseTimeSpan)
@@ -98,6 +99,6 @@ namespace kino.LeaseProvider
         }
 
         private static bool LeaseNullOrExpired(Lease lease)
-            => lease == null || lease.ExpiresAt < DateTime.UtcNow;                
+            => lease == null || lease.ExpiresAt < DateTime.UtcNow;
     }
 }
