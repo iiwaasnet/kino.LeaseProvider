@@ -7,7 +7,7 @@ namespace kino.LeaseProvider.Messages
     [ProtoContract]
     public class CreateLeaseProviderInstanceRequestMessage : Payload
     {
-        private static readonly byte[] MessageVersion = "1.0".GetBytes();
+        private static readonly byte[] MessageVersion = Contract.Version.GetBytes();
         private static readonly byte[] MessageIdentity = "CREATELPINSTREQ".BuildFullIdentity();
 
         [ProtoMember(1)]
