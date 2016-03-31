@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using kino.Actors;
 using kino.Core.Connectivity;
-using kino.Core.Diagnostics;
 using kino.Core.Framework;
 using kino.Core.Messaging;
 using kino.LeaseProvider.Messages;
@@ -13,15 +12,12 @@ namespace kino.LeaseProvider
     {
         private readonly ILeaseProvider leaseProvider;
         private readonly IMessageSerializer messageSerializer;
-        private readonly ILogger logger;
 
         public LeaseProviderActor(ILeaseProvider leaseProvider,
-                                  IMessageSerializer messageSerializer,
-                                  ILogger logger)
+                                  IMessageSerializer messageSerializer)
         {
             this.leaseProvider = leaseProvider;
             this.messageSerializer = messageSerializer;
-            this.logger = logger;
         }
 
         [MessageHandlerDefinition(typeof (LeaseRequestMessage))]
@@ -55,9 +51,7 @@ namespace kino.LeaseProvider
         }
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
-        {
-            return requestor.Uri == leaseOwner?.Uri && Unsafe.Equals(requestor.Identity, leaseOwner?.Identity);
-        }
+            => requestor.Uri == leaseOwner?.Uri && Unsafe.Equals(requestor.Identity, leaseOwner?.Identity);
 
         [MessageHandlerDefinition(typeof (CreateLeaseProviderInstanceRequestMessage))]
         public async Task<IActorResult> CreateLeaseProviderInstance(IMessage message)
@@ -71,10 +65,7 @@ namespace kino.LeaseProvider
                                               Instance = payload.Instance,
                                               ActivationWaitTime = res.ActivationWaitTime
                                           });
-            var broadcastRequest = Message.Create(new InternalCreateLeaseProviderInstanceRequestMessage
-                                                  {
-                                                      Instance = payload.Instance
-                                                  },
+            var broadcastRequest = Message.Create(new InternalCreateLeaseProviderInstanceRequestMessage {Instance = payload.Instance},
                                                   DistributionPattern.Broadcast);
 
             return new ActorResult(broadcastRequest, response);

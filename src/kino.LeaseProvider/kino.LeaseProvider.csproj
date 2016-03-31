@@ -128,7 +128,7 @@
     <Compile Include="Instance.cs" />
     <Compile Include="InstanceLeaseProvider.Logging.cs" />
     <Compile Include="InstanceLeaseProvider.cs" />
-    <Compile Include="InstanceLeaseProviderHolder.cs" />
+    <Compile Include="DelayedInstanceWrap.cs" />
     <Compile Include="InstanceRoundBasedRegister.Logging.cs" />
     <Compile Include="InstanceRoundBasedRegister.cs" />
     <Compile Include="LeaseProvider.cs" />

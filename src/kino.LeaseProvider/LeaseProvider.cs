@@ -16,7 +16,7 @@ namespace kino.LeaseProvider
         private readonly LeaseTimingConfiguration leaseTimingConfig;
         private readonly LeaseConfiguration leaseConfiguration;
         private readonly ILogger logger;
-        private readonly ConcurrentDictionary<Instance, InstanceLeaseProviderHolder> leaseProviders;
+        private readonly ConcurrentDictionary<Instance, DelayedInstanceWrap> leaseProviders;
 
         public LeaseProvider(IIntercomMessageHub intercomMessageHub,
                              IBallotGenerator ballotGenerator,
@@ -33,7 +33,7 @@ namespace kino.LeaseProvider
             this.leaseTimingConfig = leaseTimingConfig;
             this.leaseConfiguration = leaseConfiguration;
             this.logger = logger;
-            leaseProviders = new ConcurrentDictionary<Instance, InstanceLeaseProviderHolder>();
+            leaseProviders = new ConcurrentDictionary<Instance, DelayedInstanceWrap>();
         }
 
         public void Start()
@@ -50,23 +50,23 @@ namespace kino.LeaseProvider
         {
             ValidateLeaseTimeSpan(leaseTimeSpan);
 
-            InstanceLeaseProviderHolder leaseProviderHolder;
-            if (!leaseProviders.TryGetValue(instance, out leaseProviderHolder))
+            DelayedInstanceWrap delayedWrap;
+            if (!leaseProviders.TryGetValue(instance, out delayedWrap))
             {
                 throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} is not registered!");
             }
-            if (leaseProviderHolder.InstanceLeaseProvider == null)
+            if (delayedWrap.InstanceLeaseProvider == null)
             {
                 throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} will be available " +
                                     $"in at most {leaseTimingConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms.");
             }
 
-            return leaseProviderHolder.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
+            return delayedWrap.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
         }
 
         public RegistrationResult RegisterInstanceLeaseProvider(Instance instance)
         {
-            var leaseProvider = leaseProviders.GetOrAdd(instance, CreateInstanceLeaseProviderHolder);
+            var leaseProvider = leaseProviders.GetOrAdd(instance, CreateDelayedInstanceLeaseProvider);
 
             var res = new RegistrationResult
                       {
@@ -81,13 +81,13 @@ namespace kino.LeaseProvider
             return res;
         }
 
-        private InstanceLeaseProviderHolder CreateInstanceLeaseProviderHolder(Instance instance)
-            => new InstanceLeaseProviderHolder(instance,
-                                               intercomMessageHub,
-                                               ballotGenerator,
-                                               synodConfig,
-                                               leaseConfiguration,
-                                               logger);
+        private DelayedInstanceWrap CreateDelayedInstanceLeaseProvider(Instance instance)
+            => new DelayedInstanceWrap(instance,
+                                       intercomMessageHub,
+                                       ballotGenerator,
+                                       synodConfig,
+                                       leaseConfiguration,
+                                       logger);
 
         private void ValidateLeaseTimeSpan(TimeSpan leaseTimeSpan)
         {

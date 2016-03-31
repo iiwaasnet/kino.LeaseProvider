@@ -6,7 +6,7 @@ using kino.Core.Diagnostics;
 
 namespace kino.LeaseProvider
 {
-    internal class InstanceLeaseProviderHolder
+    internal class DelayedInstanceWrap
     {
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
@@ -15,7 +15,7 @@ namespace kino.LeaseProvider
         private readonly ILogger logger;
         private InstanceLeaseProvider instanceLeaseProvider;
 
-        public InstanceLeaseProviderHolder(Instance instance,
+        public DelayedInstanceWrap(Instance instance,
                                            IIntercomMessageHub intercomMessageHub,
                                            IBallotGenerator ballotGenerator,
                                            ISynodConfiguration synodConfig,
