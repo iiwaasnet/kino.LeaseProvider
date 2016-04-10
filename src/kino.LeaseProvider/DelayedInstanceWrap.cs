@@ -27,7 +27,7 @@ namespace kino.LeaseProvider
             this.synodConfig = synodConfig;
             this.leaseConfig = leaseConfig;
             this.logger = logger;
-            Task.Delay(leaseConfig.MaxLeaseTimeSpan).ContinueWith(_ => CreateInstanceLeaseProvider(instance));
+            Task.Delay(leaseConfig.ClockDrift).ContinueWith(_ => CreateInstanceLeaseProvider(instance));
         }
 
         private void CreateInstanceLeaseProvider(Instance instance)

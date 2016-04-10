@@ -34,7 +34,6 @@
             },
             "leaseTiming": {
                 "minAllowedLeaseTimeSpan": "00:00:03",
-                "maxAllowedLeaseTimeSpan": "00:00:30",
                 "clockDrift": "00:00:00.100",
                 "messageRoundtrip": "00:00:00.400",
                 "nodeResponseTimeout": "00:00:00.200"

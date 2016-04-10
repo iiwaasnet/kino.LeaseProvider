@@ -58,7 +58,7 @@ namespace kino.LeaseProvider
             if (delayedWrap.InstanceLeaseProvider == null)
             {
                 throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} will be available " +
-                                    $"in at most {leaseTimingConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms.");
+                                    $"in at most {leaseTimingConfig.ClockDrift.TotalMilliseconds} ms.");
             }
 
             return delayedWrap.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
@@ -72,11 +72,11 @@ namespace kino.LeaseProvider
                       {
                           ActivationWaitTime = leaseProvider.InstanceLeaseProvider != null
                                                    ? TimeSpan.Zero
-                                                   : leaseTimingConfig.MaxAllowedLeaseTimeSpan
+                                                   : leaseTimingConfig.ClockDrift
                       };
 
             logger.Trace($"Requested LeaseProvider for Instance {instance.Identity.GetString()} " +
-                         $"will be active in {TimeSpan.Zero.TotalSeconds} sec.");
+                         $"will be active in {res.ActivationWaitTime.TotalSeconds} sec.");
 
             return res;
         }
@@ -91,12 +91,10 @@ namespace kino.LeaseProvider
 
         private void ValidateLeaseTimeSpan(TimeSpan leaseTimeSpan)
         {
-            if (leaseTimeSpan < leaseTimingConfig.MinAllowedLeaseTimeSpan
-                || leaseTimeSpan > leaseTimingConfig.MaxAllowedLeaseTimeSpan)
+            if (leaseTimeSpan < leaseTimingConfig.MinAllowedLeaseTimeSpan)
             {
                 throw new ArgumentException($"Requested {nameof(leaseTimeSpan)} ({leaseTimeSpan.TotalMilliseconds} ms) " +
-                                            $"is not in {leaseTimingConfig.MinAllowedLeaseTimeSpan.TotalMilliseconds}-" +
-                                            $"{leaseTimingConfig.MaxAllowedLeaseTimeSpan.TotalMilliseconds} ms range!");
+                                            $"should be longer than {leaseTimingConfig.MinAllowedLeaseTimeSpan.TotalMilliseconds} ms!");
             }
         }
 
