@@ -1,43 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
-<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>kino.LeaseProvider</id>
+    <version>0.0.0.1-beta</version>
     <title>kino.LeaseProvider</title>
-    <version>0.0.0.1</version>
     <authors>Sergey Ivasenko</authors>
     <owners>Sergey Ivasenko</owners>
-    <summary>Lease Provider Service for kino networks</summary>
-	<description>Lease Provider Service for kino networks</description>
-    <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
-    <packageSourceUrl>https://github.com/iiwaasnet/kino.LeaseProvider</packageSourceUrl>
-    <tags>kino.LeaseProvider kino lease</tags>
-    <copyright>Copyright © 2016 Sergey Ivasenko</copyright>
     <licenseUrl>https://github.com/iiwaasnet/kino.LeaseProvider/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<description>Lease Provider Service for kino networks</description>
+    <copyright>Copyright © 2016 Sergey Ivasenko</copyright>
+    <tags>kino.LeaseProvider kino lease</tags>
   </metadata>
   <files>
-    <file src="kino.LeaseProvider.exe" target="kino.LeaseProvider.exe" />
-    <file src="AsyncIO.dll" target="AsyncIO.dll" />
-    <file src="Autofac.dll" target="Autofac.dll" />
-    <file src="C5.dll" target="C5.dll" />
-    <file src="kino.dll" target="kino.dll" />
-	<file src="kino.Actors.dll" target="kino.Actors.dll" />
-    <file src="kino.Client.dll" target="kino.Client.dll" />
-    <file src="kino.Core.dll" target="kino.Core.dll" />
-    <file src="kino.Consensus.dll" target="kino.Consensus.dll" />
-    <file src="kino.LeaseProvider.Messages.dll" target="kino.LeaseProvider.Messages.dll" />
-    <file src="NetMQ.dll" target="NetMQ.dll" />
-    <file src="Newtonsoft.Json.dll" target="Newtonsoft.Json.dll" />
-    <file src="NLog.dll" target="NLog.dll" />
-    <file src="protobuf-net.dll" target="protobuf-net.dll" />
-    <file src="System.Reactive.Core.dll" target="System.Reactive.Core.dll" />
-    <file src="System.Reactive.Interfaces.dll" target="System.Reactive.Interfaces.dll" />
-    <file src="System.Reactive.Linq.dll" target="System.Reactive.Linq.dll" />
-    <file src="TypedConfigProvider.dll" target="TypedConfigProvider.dll" />
-    <file src="WindowsServiceHost.dll" target="WindowsServiceHost.dll" />
-    <file src="config/NLog.config" target="config/NLog.config" />
-    <file src="config/Application.config.json" target="config/Application.config.json" />
-    <file src="kino.LeaseProvider.exe.config" target="kino.LeaseProvider.exe.config" />
+    <file src="bin\Release\kino.LeaseProvider.exe" target="kino.LeaseProvider.exe" />
+    <file src="bin\Release\AsyncIO.dll" target="AsyncIO.dll" />
+    <file src="bin\Release\Autofac.dll" target="Autofac.dll" />
+    <file src="bin\Release\C5.dll" target="C5.dll" />
+    <file src="bin\Release\kino.dll" target="kino.dll" />
+	<file src="bin\Release\kino.Actors.dll" target="kino.Actors.dll" />
+    <file src="bin\Release\kino.Client.dll" target="kino.Client.dll" />
+    <file src="bin\Release\kino.Core.dll" target="kino.Core.dll" />
+    <file src="bin\Release\kino.Consensus.dll" target="kino.Consensus.dll" />
+    <file src="bin\Release\kino.LeaseProvider.Messages.dll" target="kino.LeaseProvider.Messages.dll" />
+    <file src="bin\Release\NetMQ.dll" target="NetMQ.dll" />
+    <file src="bin\Release\Newtonsoft.Json.dll" target="Newtonsoft.Json.dll" />
+    <file src="bin\Release\NLog.dll" target="NLog.dll" />
+    <file src="bin\Release\protobuf-net.dll" target="protobuf-net.dll" />
+    <file src="bin\Release\System.Reactive.Core.dll" target="System.Reactive.Core.dll" />
+    <file src="bin\Release\System.Reactive.Interfaces.dll" target="System.Reactive.Interfaces.dll" />
+    <file src="bin\Release\System.Reactive.Linq.dll" target="System.Reactive.Linq.dll" />
+    <file src="bin\Release\TypedConfigProvider.dll" target="TypedConfigProvider.dll" />
+    <file src="bin\Release\WindowsServiceHost.dll" target="WindowsServiceHost.dll" />
+    <file src="bin\Release\config/NLog.config" target="config/NLog.config" />
+    <file src="bin\Release\config/Application.config.json" target="config/Application.config.json" />
+    <file src="bin\Release\kino.LeaseProvider.exe.config" target="kino.LeaseProvider.exe.config" />
   </files>
 </package>
