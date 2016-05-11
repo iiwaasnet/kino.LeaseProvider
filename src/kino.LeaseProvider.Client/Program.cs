@@ -48,7 +48,8 @@ namespace kino.LeaseProvider.Client
             Thread.Sleep(TimeSpan.FromSeconds(5));
             Console.WriteLine($"Client is running... {DateTime.Now}");
 
-            var instances = new[] {"A", "B"};
+            var instances = Enumerable.Range(0, 1000).Select(i => i.ToString()).ToArray();
+            var rnd = new Random(DateTime.UtcNow.Millisecond);
 
             CreateLeaseProviderInstances(instances, messageHub);
 
@@ -59,7 +60,7 @@ namespace kino.LeaseProvider.Client
                 var ownerIdentity = Guid.NewGuid().ToByteArray();
                 var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
                                                              {
-                                                                 Instance = (run++ % 2 == 0) ? instances[0] : instances[1],
+                                                                 Instance = instances[rnd.Next(0, instances.Length - 1)],
                                                                  LeaseTimeSpan = TimeSpan.FromSeconds(5),
                                                                  Requestor = new Node
                                                                              {
@@ -70,7 +71,7 @@ namespace kino.LeaseProvider.Client
                 request.TraceOptions = MessageTraceOptions.None;
                 var callbackPoint = CallbackPoint.Create<LeaseResponseMessage>();
                 var promise = messageHub.EnqueueRequest(request, callbackPoint);
-                var waitTimeout = TimeSpan.FromSeconds(5);
+                var waitTimeout = TimeSpan.FromMilliseconds(500);
                 if (promise.GetResponse().Wait(waitTimeout))
                 {
                     var response = promise.GetResponse().Result.GetPayload<LeaseResponseMessage>();
@@ -84,13 +85,13 @@ namespace kino.LeaseProvider.Client
                                           $"OwnerIdentity: {response.Lease?.Owner.Identity.GetString()} " +
                                           $"RequestorIdentity: {ownerIdentity.GetString()} " +
                                           $"ExpiresAt: {response.Lease?.ExpiresAt}");
+                        Thread.Sleep(TimeSpan.FromMilliseconds(100));
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Call timed out after {waitTimeout.TotalSeconds} sec.");
                 }
-                Thread.Sleep(TimeSpan.FromMilliseconds(2000));
             }
 
             Console.ReadLine();

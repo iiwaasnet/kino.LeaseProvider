@@ -34,24 +34,24 @@
       <HintPath>..\packages\AsyncIO.0.1.18.0\lib\net40\AsyncIO.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="C5, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\C5.2.4.5891.40110\lib\net45\C5.dll</HintPath>
+    <Reference Include="C5, Version=2.4.5947.17248, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\C5.2.4.5947.17249\lib\net45\C5.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kino, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\kino.0.0.1.15-beta\lib\net46\kino.dll</HintPath>
+      <HintPath>..\packages\kino.0.0.1.16-beta\lib\net46\kino.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kino.Actors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\kino.0.0.1.15-beta\lib\net46\kino.Actors.dll</HintPath>
+      <HintPath>..\packages\kino.0.0.1.16-beta\lib\net46\kino.Actors.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kino.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\kino.0.0.1.15-beta\lib\net46\kino.Client.dll</HintPath>
+      <HintPath>..\packages\kino.0.0.1.16-beta\lib\net46\kino.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kino.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\kino.0.0.1.15-beta\lib\net46\kino.Core.dll</HintPath>
+      <HintPath>..\packages\kino.0.0.1.16-beta\lib\net46\kino.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NetMQ, Version=4.0.0.0, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
