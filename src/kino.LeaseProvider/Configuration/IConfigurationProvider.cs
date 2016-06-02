@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using kino.Client;
 using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
 
@@ -12,5 +13,7 @@ namespace kino.LeaseProvider.Configuration
         RouterConfiguration GetRouterConfiguration();
         ClusterMembershipConfiguration GetClusterMembershipConfiguration();
         SynodConfiguration GetSynodConfiguration();
+        LeaseProviderConfiguration GetLeaseProviderConfiguration();
+        MessageHubConfiguration GetMessageHubConfiguration();
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using kino.Actors;
+using kino.Client;
 using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
 using kino.Core.Messaging;
-using kino.Core.Sockets;
 using kino.LeaseProvider.Configuration;
 using TypedConfigProvider;
 using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
@@ -23,26 +23,6 @@ namespace kino.LeaseProvider
 
             RegisterConfiguration(builder);
             RegisterConsensus(builder);
-
-            builder.RegisterType<Composer>()
-                   .AsSelf()
-                   .SingleInstance();
-
-            builder.Register(c => c.Resolve<Composer>().BuildMessageRouter(c.Resolve<RouterConfiguration>(),
-                                                                           c.Resolve<ClusterMembershipConfiguration>(),
-                                                                           c.Resolve<IEnumerable<RendezvousEndpoint>>(),
-                                                                           c.Resolve<ILogger>()))
-                   .As<IMessageRouter>()
-                   .SingleInstance();
-
-            builder.Register(c => c.Resolve<Composer>().BuildActorHostManager(c.Resolve<RouterConfiguration>(),
-                                                                              c.Resolve<ILogger>()))
-                   .As<IActorHostManager>()
-                   .SingleInstance();
-
-            builder.Register(c => new SocketFactory(c.ResolveOptional<SocketConfiguration>()))
-                   .As<ISocketFactory>()
-                   .SingleInstance();
 
             builder.RegisterType<LeaseProviderService>()
                    .As<ILeaseProviderService>()
@@ -102,6 +82,10 @@ namespace kino.LeaseProvider
                    .As<IConfigurationProvider>()
                    .SingleInstance();
 
+            builder.Register(c => c.Resolve<IConfigurationProvider>().GetLeaseProviderConfiguration())
+                   .As<LeaseProviderConfiguration>()
+                   .SingleInstance();
+
             builder.Register(c => c.Resolve<IConfigurationProvider>().GetRouterConfiguration())
                    .As<RouterConfiguration>()
                    .SingleInstance();
@@ -124,6 +108,10 @@ namespace kino.LeaseProvider
 
             builder.Register(c => c.Resolve<IConfigurationProvider>().GetRendezvousEndpointsConfiguration())
                    .As<IEnumerable<RendezvousEndpoint>>()
+                   .SingleInstance();
+
+            builder.Register(c => c.Resolve<IConfigurationProvider>().GetMessageHubConfiguration())
+                   .As<MessageHubConfiguration>()
                    .SingleInstance();
         }
     }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using kino.Client;
 using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
 
@@ -38,6 +40,9 @@ namespace kino.LeaseProvider.Configuration
         public SynodConfiguration GetSynodConfiguration()
             => appConfig.LeaseProvider.Synod;
 
+        public LeaseProviderConfiguration GetLeaseProviderConfiguration()
+            => appConfig.LeaseProvider;
+
         public LeaseConfiguration GetLeaseConfiguration()
             => new LeaseConfiguration
                {
@@ -46,5 +51,8 @@ namespace kino.LeaseProvider.Configuration
                    MessageRoundtrip = appConfig.LeaseProvider.LeaseTiming.MessageRoundtrip,
                    NodeResponseTimeout = appConfig.LeaseProvider.LeaseTiming.NodeResponseTimeout
                };
+
+        public MessageHubConfiguration GetMessageHubConfiguration()
+            => new MessageHubConfiguration {RouterUri = new Uri(appConfig.Kino.RouterUri)};
     }
 }

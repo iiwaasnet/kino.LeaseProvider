@@ -12,7 +12,7 @@ namespace kino.LeaseProvider
 
         IEnumerable<Instance> GetRegisteredInstances();
 
-        void Start();
+        bool Start(TimeSpan startTimeout);
 
         void Stop();
     }

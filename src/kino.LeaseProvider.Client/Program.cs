@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Autofac;
+using Autofac.kino;
 using kino.Actors;
 using kino.Client;
 using kino.Core.Connectivity;
@@ -20,26 +21,20 @@ namespace kino.LeaseProvider.Client
         private static void Main(string[] args)
         {
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new MainModule());
+            builder.RegisterModule<MainModule>();
+            builder.RegisterModule<KinoModule>();
             var container = builder.Build();
 
-            var componentResolver = new Composer(container.ResolveOptional<SocketConfiguration>());
-
-            var messageRouter = componentResolver.BuildMessageRouter(container.Resolve<RouterConfiguration>(),
-                                                                     container.Resolve<ClusterMembershipConfiguration>(),
-                                                                     container.Resolve<IEnumerable<RendezvousEndpoint>>(),
-                                                                     container.Resolve<ILogger>());
-            messageRouter.Start();
+            var messageRouter = container.Resolve<IMessageRouter>();
+            messageRouter.Start(TimeSpan.FromSeconds(3));
             // Needed to let router bind to socket over INPROC. To be fixed by NetMQ in future.
             Thread.Sleep(TimeSpan.FromMilliseconds(30));
 
-            var messageHub = componentResolver.BuildMessageHub(container.Resolve<MessageHubConfiguration>(),
-                                                               container.Resolve<ILogger>());
+            var messageHub = container.Resolve<IMessageHub>();
             messageHub.Start();
 
             // Host Actors
-            var actorHostManager = componentResolver.BuildActorHostManager(container.Resolve<RouterConfiguration>(),
-                                                                           container.Resolve<ILogger>());
+            var actorHostManager = container.Resolve<IActorHostManager>();
             foreach (var actor in container.Resolve<IEnumerable<IActor>>())
             {
                 actorHostManager.AssignActor(actor);
@@ -51,7 +46,9 @@ namespace kino.LeaseProvider.Client
             var instances = Enumerable.Range(0, 1000).Select(i => i.ToString()).ToArray();
             var rnd = new Random(DateTime.UtcNow.Millisecond);
 
-            CreateLeaseProviderInstances(instances, messageHub);
+            var partition = "test".GetBytes();
+
+            CreateLeaseProviderInstances(instances, messageHub, partition);
 
             var run = 0;
 
@@ -66,10 +63,11 @@ namespace kino.LeaseProvider.Client
                                                                              {
                                                                                  Identity = ownerIdentity,
                                                                                  Uri = "tpc://localhost"
-                                                                             }
+                                                                             },
+                                                                 Partition = partition
                                                              });
                 request.TraceOptions = MessageTraceOptions.None;
-                var callbackPoint = CallbackPoint.Create<LeaseResponseMessage>();
+                var callbackPoint = new CallbackPoint(MessageIdentifier.Create<LeaseResponseMessage>(partition));
                 var promise = messageHub.EnqueueRequest(request, callbackPoint);
                 var waitTimeout = TimeSpan.FromMilliseconds(500);
                 if (promise.GetResponse().Wait(waitTimeout))
@@ -102,16 +100,20 @@ namespace kino.LeaseProvider.Client
             Console.WriteLine("Client stopped.");
         }
 
-        private static void CreateLeaseProviderInstances(IEnumerable<string> instances, IMessageHub messageHub)
+        private static void CreateLeaseProviderInstances(IEnumerable<string> instances, IMessageHub messageHub, byte[] partition)
         {
             if (instances.Any())
             {
                 var results = new List<CreateLeaseProviderInstanceResponseMessage>();
                 foreach (var instance in instances)
                 {
-                    var message = Message.CreateFlowStartMessage(new CreateLeaseProviderInstanceRequestMessage {Instance = instance});
-                    message.TraceOptions = MessageTraceOptions.Routing;
-                    var callback = CallbackPoint.Create<CreateLeaseProviderInstanceResponseMessage>();
+                    var message = Message.CreateFlowStartMessage(new CreateLeaseProviderInstanceRequestMessage
+                                                                 {
+                                                                     Instance = instance,
+                                                                     Partition = partition
+                                                                 });
+                    //message.TraceOptions = MessageTraceOptions.Routing;
+                    var callback = new CallbackPoint(MessageIdentifier.Create<CreateLeaseProviderInstanceResponseMessage>(partition));
 
                     using (var promise = messageHub.EnqueueRequest(message, callback))
                     {

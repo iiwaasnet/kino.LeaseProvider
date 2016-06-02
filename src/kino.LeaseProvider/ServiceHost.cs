@@ -1,11 +1,14 @@
-﻿using WindowsServiceHost;
+﻿using System;
+using WindowsServiceHost;
 using Autofac;
+using Autofac.kino;
 
 namespace kino.LeaseProvider
 {
     public class ServiceHost : WindowsService
     {
         private ILeaseProviderService leaseProviderService;
+        private static readonly TimeSpan StartTimeout = TimeSpan.FromSeconds(3);
 
         protected override ServiceConfiguration GetServiceConfiguration()
             => new ServiceConfiguration
@@ -20,11 +23,14 @@ namespace kino.LeaseProvider
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule<MainModule>();
+            builder.RegisterModule<KinoModule>();
             var container = builder.Build();
 
             leaseProviderService = container.Resolve<ILeaseProviderService>();
-
-            leaseProviderService.Start();
+            if (!leaseProviderService.Start(StartTimeout))
+            {
+                throw new Exception($"Failed starting LeaseProvider after {StartTimeout.TotalMilliseconds} ms!");
+            }
         }
 
         private void Stop()

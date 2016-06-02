@@ -21,6 +21,7 @@ namespace kino.LeaseProvider
         private readonly ISynodConfiguration synodConfig;
         private readonly LeaseTimingConfiguration leaseTimingConfig;
         private readonly LeaseConfiguration leaseConfiguration;
+        private readonly byte[] clusterName;
         private readonly IMessageHub messageHub;
         private readonly ILogger logger;
         private readonly ConcurrentDictionary<Instance, DelayedInstanceWrap> leaseProviders;
@@ -30,6 +31,7 @@ namespace kino.LeaseProvider
                              ISynodConfiguration synodConfig,
                              LeaseTimingConfiguration leaseTimingConfig,
                              LeaseConfiguration leaseConfiguration,
+                             LeaseProviderConfiguration leaseProviderConfiguration,
                              IMessageHub messageHub,
                              ILogger logger)
         {
@@ -42,20 +44,23 @@ namespace kino.LeaseProvider
             this.leaseConfiguration = leaseConfiguration;
             this.messageHub = messageHub;
             this.logger = logger;
+            clusterName = leaseProviderConfiguration.ClusterName.GetBytes();
             leaseProviders = new ConcurrentDictionary<Instance, DelayedInstanceWrap>();
         }
 
-        public void Start()
+        public bool Start(TimeSpan startTimeout)
         {
-            intercomMessageHub.Start();
+            if (intercomMessageHub.Start(startTimeout))
+            {
+                RequestInstanceDiscovery();
+                return true;
+            }
 
-            RequestInstanceDiscovery();
+            return false;
         }
 
         public void Stop()
-        {
-            intercomMessageHub.Stop();
-        }
+            => intercomMessageHub.Stop();
 
         public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] requestorIdentity)
         {
@@ -78,7 +83,10 @@ namespace kino.LeaseProvider
         }
 
         private void RequestInstanceDiscovery()
-            => messageHub.SendOneWay(Message.Create(new InternalDiscoverLeaseProviderInstancesRequestMessage(),
+            => messageHub.SendOneWay(Message.Create(new InternalDiscoverLeaseProviderInstancesRequestMessage
+                                                    {
+                                                        Partition = clusterName
+                                                    },
                                                     DistributionPattern.Broadcast));
 
         public RegistrationResult RegisterInstance(Instance instance)

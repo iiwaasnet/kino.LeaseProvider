@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using kino.Actors;
 using kino.Core.Connectivity;
 using kino.Core.Framework;
 using kino.Core.Messaging;
+using kino.LeaseProvider.Configuration;
 using kino.LeaseProvider.Messages;
 using Node = kino.LeaseProvider.Messages.Node;
 
@@ -13,15 +15,49 @@ namespace kino.LeaseProvider
     {
         private readonly ILeaseProvider leaseProvider;
         private readonly IMessageSerializer messageSerializer;
+        private readonly byte[] clusterName;
 
         public LeaseProviderActor(ILeaseProvider leaseProvider,
-                                  IMessageSerializer messageSerializer)
+                                  IMessageSerializer messageSerializer,
+                                  LeaseProviderConfiguration leaseProviderConfiguration)
         {
             this.leaseProvider = leaseProvider;
             this.messageSerializer = messageSerializer;
+            clusterName = leaseProviderConfiguration.ClusterName.GetBytes();
         }
 
-        [MessageHandlerDefinition(typeof(LeaseRequestMessage))]
+        public override IEnumerable<MessageHandlerDefinition> GetInterfaceDefinition()
+        {
+            return new[]
+                   {
+                       new MessageHandlerDefinition
+                       {
+                           Message = MessageDefinition.Create<LeaseRequestMessage>(clusterName),
+                           Handler = GetLease
+                       },
+                       new MessageHandlerDefinition
+                       {
+                           Message = MessageDefinition.Create<CreateLeaseProviderInstanceRequestMessage>(clusterName),
+                           Handler = CreateLeaseProviderInstance
+                       },
+                       new MessageHandlerDefinition
+                       {
+                           Message = MessageDefinition.Create<InternalCreateLeaseProviderInstanceRequestMessage>(clusterName),
+                           Handler = InternalCreateLeaseProviderInstance
+                       },
+                       new MessageHandlerDefinition
+                       {
+                           Message = MessageDefinition.Create<InternalDiscoverLeaseProviderInstancesRequestMessage>(clusterName),
+                           Handler = InternalDiscoverLeaseProviderInstancesRequest
+                       },
+                       new MessageHandlerDefinition
+                       {
+                           Message = MessageDefinition.Create<InternalDiscoverLeaseProviderInstancesResponseMessage>(clusterName),
+                           Handler = InternalDiscoverLeaseProviderInstancesResponse
+                       }
+                   };
+        }
+
         public async Task<IActorResult> GetLease(IMessage message)
         {
             var payload = message.GetPayload<LeaseRequestMessage>();
@@ -46,15 +82,16 @@ namespace kino.LeaseProvider
                                                               ExpiresAt = lease.ExpiresAt,
                                                               Owner = leaseOwner
                                                           }
-                                                        : null
+                                                        : null,
+                                            Partition = clusterName
                                         });
+
             return new ActorResult(result);
         }
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
             => requestor.Uri == leaseOwner?.Uri && Unsafe.Equals(requestor.Identity, leaseOwner?.Identity);
 
-        [MessageHandlerDefinition(typeof(CreateLeaseProviderInstanceRequestMessage))]
         public async Task<IActorResult> CreateLeaseProviderInstance(IMessage message)
         {
             var payload = message.GetPayload<CreateLeaseProviderInstanceRequestMessage>();
@@ -64,15 +101,19 @@ namespace kino.LeaseProvider
             var response = Message.Create(new CreateLeaseProviderInstanceResponseMessage
                                           {
                                               Instance = payload.Instance,
-                                              ActivationWaitTime = res.ActivationWaitTime
+                                              ActivationWaitTime = res.ActivationWaitTime,
+                                              Partition = clusterName
                                           });
-            var broadcastRequest = Message.Create(new InternalCreateLeaseProviderInstanceRequestMessage {Instance = payload.Instance},
+            var broadcastRequest = Message.Create(new InternalCreateLeaseProviderInstanceRequestMessage
+                                                  {
+                                                      Instance = payload.Instance,
+                                                      Partition = clusterName
+                                                  },
                                                   DistributionPattern.Broadcast);
 
             return new ActorResult(broadcastRequest, response);
         }
 
-        [MessageHandlerDefinition(typeof(InternalCreateLeaseProviderInstanceRequestMessage))]
         public Task<IActorResult> InternalCreateLeaseProviderInstance(IMessage message)
         {
             var payload = message.GetPayload<InternalCreateLeaseProviderInstanceRequestMessage>();
@@ -82,7 +123,6 @@ namespace kino.LeaseProvider
             return null;
         }
 
-        [MessageHandlerDefinition(typeof(InternalDiscoverLeaseProviderInstancesRequestMessage))]
         public async Task<IActorResult> InternalDiscoverLeaseProviderInstancesRequest(IMessage message)
         {
             var instances = leaseProvider.GetRegisteredInstances();
@@ -90,7 +130,8 @@ namespace kino.LeaseProvider
             {
                 var response = Message.Create(new InternalDiscoverLeaseProviderInstancesResponseMessage
                                               {
-                                                  Instances = instances.Select(i => i.ToString()).ToList()
+                                                  Instances = instances.Select(i => i.ToString()).ToList(),
+                                                  Partition = clusterName
                                               },
                                               DistributionPattern.Broadcast);
 
@@ -100,7 +141,6 @@ namespace kino.LeaseProvider
             return null;
         }
 
-        [MessageHandlerDefinition(typeof(InternalDiscoverLeaseProviderInstancesResponseMessage))]
         public async Task<IActorResult> InternalDiscoverLeaseProviderInstancesResponse(IMessage message)
         {
             var payload = message.GetPayload<InternalDiscoverLeaseProviderInstancesResponseMessage>();

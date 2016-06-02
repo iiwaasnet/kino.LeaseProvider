@@ -3,8 +3,6 @@
     class Program
     {
         static void Main(string[] args)
-        {
-            new ServiceHost().Run();
-        }
+            => new ServiceHost().Run();
     }
 }

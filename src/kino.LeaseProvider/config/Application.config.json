@@ -23,6 +23,7 @@
             ]
         },
         "leaseProvider": {
+            "clusterName" :  "test",
             "synod": {
                 "localNode": "tcp://127.0.0.75:7000",
                 "members": [

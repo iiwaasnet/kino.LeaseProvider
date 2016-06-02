@@ -1,8 +1,10 @@
-﻿namespace kino.LeaseProvider
+﻿using System;
+
+namespace kino.LeaseProvider
 {
     public interface ILeaseProviderService
     {
-        void Start();
+        bool Start(TimeSpan startTimeout);
         void Stop();
     }
 }
