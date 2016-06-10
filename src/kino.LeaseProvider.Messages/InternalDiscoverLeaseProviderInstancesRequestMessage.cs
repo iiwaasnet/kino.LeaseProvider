@@ -5,13 +5,10 @@ using ProtoBuf;
 namespace kino.LeaseProvider.Messages
 {
     [ProtoContract]
-    public class InternalCreateLeaseProviderInstanceRequestMessage : Payload
+    public class InternalDiscoverLeaseProviderInstancesRequestMessage : Payload
     {
         private static readonly byte[] MessageVersion = Contract.Version.GetBytes();
-        private static readonly byte[] MessageIdentity = "INT-CREATELPINSTREQ".BuildFullIdentity();
-
-        [ProtoMember(1)]
-        public string Instance { get; set; }
+        private static readonly byte[] MessageIdentity = "INT-DISCOVERLPINSTREQ".BuildFullIdentity();
 
         public override byte[] Version => MessageVersion;
 

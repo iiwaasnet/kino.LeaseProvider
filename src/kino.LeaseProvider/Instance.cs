@@ -6,9 +6,11 @@ namespace kino.LeaseProvider
     public class Instance : IEquatable<Instance>
     {
         private readonly int hashCode;
+        private readonly string identity;
 
         public Instance(string identity)
         {
+            this.identity = identity;
             Identity = identity.GetBytes();
             hashCode = Identity.ComputeHash();
         }
@@ -55,6 +57,9 @@ namespace kino.LeaseProvider
         {
             return !Equals(left, right);
         }
+
+        public override string ToString()
+            => identity;
 
         public byte[] Identity { get; }
     }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using kino.Actors;
 using kino.Core.Connectivity;
 using kino.Core.Framework;
@@ -20,7 +21,7 @@ namespace kino.LeaseProvider
             this.messageSerializer = messageSerializer;
         }
 
-        [MessageHandlerDefinition(typeof (LeaseRequestMessage))]
+        [MessageHandlerDefinition(typeof(LeaseRequestMessage))]
         public async Task<IActorResult> GetLease(IMessage message)
         {
             var payload = message.GetPayload<LeaseRequestMessage>();
@@ -53,12 +54,12 @@ namespace kino.LeaseProvider
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
             => requestor.Uri == leaseOwner?.Uri && Unsafe.Equals(requestor.Identity, leaseOwner?.Identity);
 
-        [MessageHandlerDefinition(typeof (CreateLeaseProviderInstanceRequestMessage))]
+        [MessageHandlerDefinition(typeof(CreateLeaseProviderInstanceRequestMessage))]
         public async Task<IActorResult> CreateLeaseProviderInstance(IMessage message)
         {
             var payload = message.GetPayload<CreateLeaseProviderInstanceRequestMessage>();
 
-            var res = leaseProvider.RegisterInstanceLeaseProvider(new Instance(payload.Instance));
+            var res = leaseProvider.RegisterInstance(new Instance(payload.Instance));
 
             var response = Message.Create(new CreateLeaseProviderInstanceResponseMessage
                                           {
@@ -71,12 +72,43 @@ namespace kino.LeaseProvider
             return new ActorResult(broadcastRequest, response);
         }
 
-        [MessageHandlerDefinition(typeof (InternalCreateLeaseProviderInstanceRequestMessage))]
+        [MessageHandlerDefinition(typeof(InternalCreateLeaseProviderInstanceRequestMessage))]
         public Task<IActorResult> InternalCreateLeaseProviderInstance(IMessage message)
         {
             var payload = message.GetPayload<InternalCreateLeaseProviderInstanceRequestMessage>();
 
-            leaseProvider.RegisterInstanceLeaseProvider(new Instance(payload.Instance));
+            leaseProvider.RegisterInstance(new Instance(payload.Instance));
+
+            return null;
+        }
+
+        [MessageHandlerDefinition(typeof(InternalDiscoverLeaseProviderInstancesRequestMessage))]
+        public async Task<IActorResult> InternalDiscoverLeaseProviderInstancesRequest(IMessage message)
+        {
+            var instances = leaseProvider.GetRegisteredInstances();
+            if (instances.Any())
+            {
+                var response = Message.Create(new InternalDiscoverLeaseProviderInstancesResponseMessage
+                                              {
+                                                  Instances = instances.Select(i => i.ToString()).ToList()
+                                              },
+                                              DistributionPattern.Broadcast);
+
+                return new ActorResult(response);
+            }
+
+            return null;
+        }
+
+        [MessageHandlerDefinition(typeof(InternalDiscoverLeaseProviderInstancesResponseMessage))]
+        public async Task<IActorResult> InternalDiscoverLeaseProviderInstancesResponse(IMessage message)
+        {
+            var payload = message.GetPayload<InternalDiscoverLeaseProviderInstancesResponseMessage>();
+
+            foreach (var instance in payload.Instances)
+            {
+                leaseProvider.RegisterInstance(new Instance(instance));
+            }
 
             return null;
         }

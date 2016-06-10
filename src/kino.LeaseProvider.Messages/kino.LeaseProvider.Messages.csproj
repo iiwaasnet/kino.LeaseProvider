@@ -77,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contract.cs" />
+    <Compile Include="InternalDiscoverLeaseProviderInstancesResponseMessage.cs" />
+    <Compile Include="InternalDiscoverLeaseProviderInstancesRequestMessage.cs" />
     <Compile Include="InternalCreateLeaseProviderInstanceRequestMessage.cs" />
     <Compile Include="CreateLeaseProviderInstanceResponseMessage.cs" />
     <Compile Include="CreateLeaseProviderInstanceRequestMessage.cs" />

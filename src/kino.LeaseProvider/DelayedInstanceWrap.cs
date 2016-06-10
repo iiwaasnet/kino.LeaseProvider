@@ -16,11 +16,11 @@ namespace kino.LeaseProvider
         private InstanceLeaseProvider instanceLeaseProvider;
 
         public DelayedInstanceWrap(Instance instance,
-                                           IIntercomMessageHub intercomMessageHub,
-                                           IBallotGenerator ballotGenerator,
-                                           ISynodConfiguration synodConfig,
-                                           LeaseConfiguration leaseConfig,
-                                           ILogger logger)
+                                   IIntercomMessageHub intercomMessageHub,
+                                   IBallotGenerator ballotGenerator,
+                                   ISynodConfiguration synodConfig,
+                                   LeaseConfiguration leaseConfig,
+                                   ILogger logger)
         {
             this.intercomMessageHub = intercomMessageHub;
             this.ballotGenerator = ballotGenerator;

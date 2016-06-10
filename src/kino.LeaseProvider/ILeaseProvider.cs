@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using kino.Consensus;
 
 namespace kino.LeaseProvider
@@ -6,8 +7,13 @@ namespace kino.LeaseProvider
     public interface ILeaseProvider
     {
         Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] requestorIdentity);
-        RegistrationResult RegisterInstanceLeaseProvider(Instance instance);
+
+        RegistrationResult RegisterInstance(Instance instance);
+
+        IEnumerable<Instance> GetRegisteredInstances();
+
         void Start();
+
         void Stop();
     }
 }

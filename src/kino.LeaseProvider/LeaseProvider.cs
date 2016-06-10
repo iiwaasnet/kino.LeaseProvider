@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using kino.Client;
 using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
+using kino.Core.Messaging;
 using kino.LeaseProvider.Configuration;
+using kino.LeaseProvider.Messages;
+using Lease = kino.Consensus.Lease;
 
 namespace kino.LeaseProvider
 {
@@ -15,6 +21,7 @@ namespace kino.LeaseProvider
         private readonly ISynodConfiguration synodConfig;
         private readonly LeaseTimingConfiguration leaseTimingConfig;
         private readonly LeaseConfiguration leaseConfiguration;
+        private readonly IMessageHub messageHub;
         private readonly ILogger logger;
         private readonly ConcurrentDictionary<Instance, DelayedInstanceWrap> leaseProviders;
 
@@ -23,6 +30,7 @@ namespace kino.LeaseProvider
                              ISynodConfiguration synodConfig,
                              LeaseTimingConfiguration leaseTimingConfig,
                              LeaseConfiguration leaseConfiguration,
+                             IMessageHub messageHub,
                              ILogger logger)
         {
             ValidateConfiguration(leaseTimingConfig);
@@ -32,6 +40,7 @@ namespace kino.LeaseProvider
             this.synodConfig = synodConfig;
             this.leaseTimingConfig = leaseTimingConfig;
             this.leaseConfiguration = leaseConfiguration;
+            this.messageHub = messageHub;
             this.logger = logger;
             leaseProviders = new ConcurrentDictionary<Instance, DelayedInstanceWrap>();
         }
@@ -39,6 +48,8 @@ namespace kino.LeaseProvider
         public void Start()
         {
             intercomMessageHub.Start();
+
+            RequestInstanceDiscovery();
         }
 
         public void Stop()
@@ -53,6 +64,8 @@ namespace kino.LeaseProvider
             DelayedInstanceWrap delayedWrap;
             if (!leaseProviders.TryGetValue(instance, out delayedWrap))
             {
+                RequestInstanceDiscovery();
+
                 throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} is not registered!");
             }
             if (delayedWrap.InstanceLeaseProvider == null)
@@ -64,7 +77,11 @@ namespace kino.LeaseProvider
             return delayedWrap.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
         }
 
-        public RegistrationResult RegisterInstanceLeaseProvider(Instance instance)
+        private void RequestInstanceDiscovery()
+            => messageHub.SendOneWay(Message.Create(new InternalDiscoverLeaseProviderInstancesRequestMessage(),
+                                                    DistributionPattern.Broadcast));
+
+        public RegistrationResult RegisterInstance(Instance instance)
         {
             var leaseProvider = leaseProviders.GetOrAdd(instance, CreateDelayedInstanceLeaseProvider);
 
@@ -80,6 +97,9 @@ namespace kino.LeaseProvider
 
             return res;
         }
+
+        public IEnumerable<Instance> GetRegisteredInstances()
+            => leaseProviders.Keys.ToList();
 
         private DelayedInstanceWrap CreateDelayedInstanceLeaseProvider(Instance instance)
             => new DelayedInstanceWrap(instance,
