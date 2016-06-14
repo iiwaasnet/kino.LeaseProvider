@@ -14,5 +14,5 @@ foreach ($NugetSpec in Get-ChildItem ..\src -Recurse | Where-Object {$_.Extensio
 	}
 	
 	Start-Process @BuildArgs -NoNewWindow
-	cpack $NugetSpec.FullName
+	nuget pack $NugetSpec.FullName -Build -NonInteractive
 }

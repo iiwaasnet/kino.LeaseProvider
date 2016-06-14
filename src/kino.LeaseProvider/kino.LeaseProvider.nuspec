@@ -1,27 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
-<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>kino.LeaseProvider</id>
-    <title>kino.LeaseProvider</title>
     <version>0.0.0.1-beta</version>
+    <title>kino.LeaseProvider</title>
     <authors>Sergey Ivasenko</authors>
     <owners>Sergey Ivasenko</owners>
-    <description>Lease Provider Service for kino networks</description>
-    <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
-    <packageSourceUrl>https://github.com/iiwaasnet/kino.LeaseProvider</packageSourceUrl>
-    <tags>kino.LeaseProvider kino lease</tags>
-    <copyright>Copyright © 2016 Sergey Ivasenko</copyright>
     <licenseUrl>https://github.com/iiwaasnet/kino.LeaseProvider/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>https://cdn.rawgit.com/iiwaasnet/kino/master/img/kino-50x50-v2.png</iconUrl>
+	<description>Lease Provider Service for kino networks</description>
+    <copyright>Copyright © 2016 Sergey Ivasenko</copyright>
+    <tags>kino.LeaseProvider kino lease</tags>
   </metadata>
   <files>
     <file src="bin\Release\kino.LeaseProvider.exe" target="kino.LeaseProvider.exe" />
     <file src="bin\Release\AsyncIO.dll" target="AsyncIO.dll" />
     <file src="bin\Release\Autofac.dll" target="Autofac.dll" />
-    <file src="bin\Release\Autofac.kino.dll" target="Autofac.kino.dll" />
     <file src="bin\Release\C5.dll" target="C5.dll" />
     <file src="bin\Release\kino.dll" target="kino.dll" />
 	<file src="bin\Release\kino.Actors.dll" target="kino.Actors.dll" />
