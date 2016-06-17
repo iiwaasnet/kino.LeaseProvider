@@ -7,6 +7,7 @@ using kino.Consensus.Configuration;
 using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
 using kino.Core.Messaging;
+using kino.LeaseProvider.Actors;
 using kino.LeaseProvider.Configuration;
 using TypedConfigProvider;
 using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
@@ -29,6 +30,14 @@ namespace kino.LeaseProvider
                    .SingleInstance();
 
             builder.RegisterType<LeaseProviderActor>()
+                   .As<IActor>()
+                   .SingleInstance();
+
+            builder.RegisterType<InstanceBuilderActor>()
+                   .As<IActor>()
+                   .SingleInstance();
+
+            builder.RegisterType<InstanceDiscoveryActor>()
                    .As<IActor>()
                    .SingleInstance();
 

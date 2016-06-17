@@ -116,6 +116,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\InstanceBuilderActor.cs" />
+    <Compile Include="Actors\InstanceDiscoveryActor.cs" />
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
@@ -136,7 +138,7 @@
     <Compile Include="InstanceRoundBasedRegister.Logging.cs" />
     <Compile Include="InstanceRoundBasedRegister.cs" />
     <Compile Include="LeaseProvider.cs" />
-    <Compile Include="LeaseProviderActor.cs" />
+    <Compile Include="Actors\LeaseProviderActor.cs" />
     <Compile Include="LeaseProviderService.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainModule.cs" />
