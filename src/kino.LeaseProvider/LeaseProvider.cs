@@ -7,9 +7,9 @@ using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
-using kino.Core.Messaging;
 using kino.LeaseProvider.Configuration;
 using kino.LeaseProvider.Messages;
+using kino.Messaging;
 using Lease = kino.Consensus.Lease;
 
 namespace kino.LeaseProvider
@@ -19,7 +19,6 @@ namespace kino.LeaseProvider
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
         private readonly ISynodConfiguration synodConfig;
-        private readonly LeaseTimingConfiguration leaseTimingConfig;
         private readonly LeaseConfiguration leaseConfiguration;
         private readonly byte[] clusterName;
         private readonly IMessageHub messageHub;
@@ -29,18 +28,16 @@ namespace kino.LeaseProvider
         public LeaseProvider(IIntercomMessageHub intercomMessageHub,
                              IBallotGenerator ballotGenerator,
                              ISynodConfiguration synodConfig,
-                             LeaseTimingConfiguration leaseTimingConfig,
                              LeaseConfiguration leaseConfiguration,
                              LeaseProviderConfiguration leaseProviderConfiguration,
                              IMessageHub messageHub,
                              ILogger logger)
         {
-            ValidateConfiguration(leaseTimingConfig);
+            ValidateConfiguration(leaseConfiguration);
 
             this.intercomMessageHub = intercomMessageHub;
             this.ballotGenerator = ballotGenerator;
             this.synodConfig = synodConfig;
-            this.leaseTimingConfig = leaseTimingConfig;
             this.leaseConfiguration = leaseConfiguration;
             this.messageHub = messageHub;
             this.logger = logger;
@@ -76,7 +73,7 @@ namespace kino.LeaseProvider
             if (delayedWrap.InstanceLeaseProvider == null)
             {
                 throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} will be available " +
-                                    $"in at most {leaseTimingConfig.ClockDrift.TotalMilliseconds} ms.");
+                                    $"in at most {leaseConfiguration.ClockDrift.TotalMilliseconds} ms.");
             }
 
             return delayedWrap.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
@@ -97,7 +94,7 @@ namespace kino.LeaseProvider
                       {
                           ActivationWaitTime = leaseProvider.InstanceLeaseProvider != null
                                                    ? TimeSpan.Zero
-                                                   : leaseTimingConfig.ClockDrift
+                                                   : leaseConfiguration.ClockDrift
                       };
 
             logger.Trace($"Requested LeaseProvider for Instance {instance.Identity.GetString()} " +
@@ -119,14 +116,14 @@ namespace kino.LeaseProvider
 
         private void ValidateLeaseTimeSpan(TimeSpan leaseTimeSpan)
         {
-            if (leaseTimeSpan < leaseTimingConfig.MinAllowedLeaseTimeSpan)
+            if (leaseTimeSpan < leaseConfiguration.MaxLeaseTimeSpan)
             {
                 throw new ArgumentException($"Requested {nameof(leaseTimeSpan)} ({leaseTimeSpan.TotalMilliseconds} ms) " +
-                                            $"should be longer than {leaseTimingConfig.MinAllowedLeaseTimeSpan.TotalMilliseconds} ms!");
+                                            $"should be longer than {leaseConfiguration.MaxLeaseTimeSpan.TotalMilliseconds} ms!");
             }
         }
 
-        private void ValidateConfiguration(LeaseTimingConfiguration config)
+        private void ValidateConfiguration(LeaseConfiguration config)
         {
             if (config.NodeResponseTimeout.TotalMilliseconds * 2 > config.MessageRoundtrip.TotalMilliseconds)
             {
@@ -134,11 +131,11 @@ namespace kino.LeaseProvider
                                     "should be at least 2 times shorter than " +
                                     $"{nameof(config.MessageRoundtrip)}[{config.MessageRoundtrip.TotalMilliseconds} msec]");
             }
-            if (config.MinAllowedLeaseTimeSpan
+            if (config.MaxLeaseTimeSpan
                 - TimeSpan.FromTicks(config.MessageRoundtrip.Ticks * 2)
                 - config.ClockDrift <= TimeSpan.Zero)
             {
-                throw new Exception($"{nameof(config.MinAllowedLeaseTimeSpan)}[{config.MinAllowedLeaseTimeSpan.TotalMilliseconds} msec] " +
+                throw new Exception($"{nameof(config.MaxLeaseTimeSpan)}[{config.MaxLeaseTimeSpan.TotalMilliseconds} msec] " +
                                     "should be longer than " +
                                     $"(2 * {nameof(config.MessageRoundtrip)}[{config.MessageRoundtrip.TotalMilliseconds} msec] " +
                                     $"+ {nameof(config.ClockDrift)}[{config.ClockDrift.TotalMilliseconds} msec])");

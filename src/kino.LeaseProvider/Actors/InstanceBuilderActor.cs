@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using kino.Actors;
-using kino.Core.Connectivity;
 using kino.Core.Framework;
-using kino.Core.Messaging;
 using kino.LeaseProvider.Configuration;
 using kino.LeaseProvider.Messages;
+using kino.Messaging;
 
 namespace kino.LeaseProvider.Actors
 {
@@ -16,8 +15,8 @@ namespace kino.LeaseProvider.Actors
         private readonly byte[] clusterName;
 
         public InstanceBuilderActor(ILeaseProvider leaseProvider,
-                                                 IMessageSerializer messageSerializer,
-                                                 LeaseProviderConfiguration leaseProviderConfiguration)
+                                    IMessageSerializer messageSerializer,
+                                    LeaseProviderConfiguration leaseProviderConfiguration)
         {
             this.leaseProvider = leaseProvider;
             this.messageSerializer = messageSerializer;

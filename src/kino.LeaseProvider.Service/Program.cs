@@ -1,4 +1,4 @@
-﻿namespace kino.LeaseProvider
+﻿namespace kino.LeaseProvider.Service
 {
     class Program
     {

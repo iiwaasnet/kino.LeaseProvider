@@ -1,5 +1,5 @@
 ﻿using kino.Consensus.Messages;
-using kino.Core.Connectivity;
+using kino.Core;
 
 namespace kino.LeaseProvider
 {

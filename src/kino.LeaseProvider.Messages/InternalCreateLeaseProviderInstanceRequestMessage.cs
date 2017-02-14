@@ -1,5 +1,4 @@
-﻿using kino.Core.Framework;
-using kino.Core.Messaging;
+﻿using kino.Messaging;
 using ProtoBuf;
 
 namespace kino.LeaseProvider.Messages
@@ -7,13 +6,13 @@ namespace kino.LeaseProvider.Messages
     [ProtoContract]
     public class InternalCreateLeaseProviderInstanceRequestMessage : Payload
     {
-        private static readonly byte[] MessageVersion = Contract.Version.GetBytes();
+        private static readonly ushort MessageVersion = Contract.Version;
         private static readonly byte[] MessageIdentity = "INT-CREATELPINSTREQ".BuildFullIdentity();
 
         [ProtoMember(1)]
         public string Instance { get; set; }
 
-        public override byte[] Version => MessageVersion;
+        public override ushort Version => MessageVersion;
 
         public override byte[] Identity => MessageIdentity;
     }

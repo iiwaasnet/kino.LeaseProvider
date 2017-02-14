@@ -1,7 +1,7 @@
 ﻿using System;
 using kino.Consensus;
 using kino.Consensus.Configuration;
-using kino.Core.Connectivity;
+using kino.Core;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
 
@@ -86,7 +86,7 @@ namespace kino.LeaseProvider
 
         private bool IsLeaseOwner(Lease lease)
         {
-            return lease != null && Unsafe.Equals(lease.OwnerIdentity, localNode.SocketIdentity);
+            return lease != null && Equals(lease.OwnerIdentity, localNode.SocketIdentity);
         }
 
         private bool LeaseIsNotSafelyExpired(Lease lease)

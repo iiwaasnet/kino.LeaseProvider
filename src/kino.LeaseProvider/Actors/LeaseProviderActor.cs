@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using kino.Actors;
-using kino.Core.Connectivity;
 using kino.Core.Framework;
-using kino.Core.Messaging;
 using kino.LeaseProvider.Configuration;
 using kino.LeaseProvider.Messages;
-using Node = kino.LeaseProvider.Messages.Node;
+using kino.Messaging;
 
 namespace kino.LeaseProvider.Actors
 {
@@ -69,6 +67,6 @@ namespace kino.LeaseProvider.Actors
         }
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
-            => requestor.Uri == leaseOwner?.Uri && Unsafe.Equals(requestor.Identity, leaseOwner?.Identity);
+            => requestor.Uri == leaseOwner?.Uri && Equals(requestor.Identity, leaseOwner?.Identity);
     }
 }

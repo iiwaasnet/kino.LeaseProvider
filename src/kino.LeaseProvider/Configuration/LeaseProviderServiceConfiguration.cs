@@ -1,6 +1,6 @@
 ﻿namespace kino.LeaseProvider.Configuration
 {
-    public class ApplicationConfiguration
+    public class LeaseProviderServiceConfiguration
     {
         public KinoConfiguration Kino { get; set; }
 

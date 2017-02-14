@@ -1,9 +1,8 @@
 ﻿using System;
 using WindowsServiceHost;
 using Autofac;
-using Autofac.kino;
 
-namespace kino.LeaseProvider
+namespace kino.LeaseProvider.Service
 {
     public class ServiceHost : WindowsService
     {

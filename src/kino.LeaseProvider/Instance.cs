@@ -25,7 +25,7 @@ namespace kino.LeaseProvider
             {
                 return true;
             }
-            return Unsafe.Equals(other.Identity, Identity);
+            return Equals(other.Identity, Identity);
         }
 
         public override bool Equals(object obj)

@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using kino.Actors;
-using kino.Core.Connectivity;
 using kino.Core.Framework;
-using kino.Core.Messaging;
 using kino.LeaseProvider.Configuration;
 using kino.LeaseProvider.Messages;
+using kino.Messaging;
 
 namespace kino.LeaseProvider.Actors
 {

@@ -6,12 +6,11 @@ using Autofac;
 using Autofac.kino;
 using kino.Actors;
 using kino.Client;
-using kino.Core.Connectivity;
-using kino.Core.Diagnostics;
+using kino.Core;
 using kino.Core.Framework;
-using kino.Core.Messaging;
-using kino.Core.Sockets;
 using kino.LeaseProvider.Messages;
+using kino.Messaging;
+using kino.Routing;
 using Node = kino.LeaseProvider.Messages.Node;
 
 namespace kino.LeaseProvider.Client

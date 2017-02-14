@@ -2,6 +2,6 @@
 {
     public static class Contract
     {
-        public const string Version = "1.0";
+        public const ushort Version = 1;
     }
 }

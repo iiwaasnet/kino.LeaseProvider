@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using kino.Client;
-using kino.Core.Connectivity;
+using kino.Cluster.Configuration;
+using kino.Core;
 
 namespace kino.LeaseProvider.Client
 {

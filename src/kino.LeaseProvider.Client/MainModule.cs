@@ -3,6 +3,7 @@ using Autofac;
 using kino.Actors;
 using kino.Actors.Diagnostics;
 using kino.Client;
+using kino.Cluster.Configuration;
 using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
 using TypedConfigProvider;

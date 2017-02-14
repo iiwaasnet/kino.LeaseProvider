@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using kino.Actors;
 using kino.Client;
-using kino.Core.Connectivity;
 using kino.Core.Framework;
+using kino.Routing;
 
 namespace kino.LeaseProvider
 {
-    public class LeaseProviderService : ILeaseProviderService
+    public partial class LeaseProviderService : ILeaseProviderService
     {
         private readonly ILeaseProvider leaseProvider;
         private readonly IMessageRouter messageRouter;
@@ -16,7 +16,6 @@ namespace kino.LeaseProvider
         private readonly IActorHostManager actorHostManager;
 
         public LeaseProviderService(ILeaseProvider leaseProvider,
-                                    IMessageRouter messageRouter,
                                     IMessageHub messageHub,
                                     IEnumerable<IActor> actors,
                                     IActorHostManager actorHostManager)
@@ -30,15 +29,11 @@ namespace kino.LeaseProvider
 
         public bool Start(TimeSpan startTimeout)
         {
-            if (messageRouter.Start(startTimeout))
-            {
-                //Thread.Sleep(TimeSpan.FromMilliseconds(300));
-                messageHub.Start();
-                actors.ForEach(a => actorHostManager.AssignActor(a));
-                return leaseProvider.Start(startTimeout);
-            }
-
-            return false;
+            messageRouter.Start();
+            TimeSpan.FromMilliseconds(300).Sleep();
+            messageHub.Start();
+            actors.ForEach(a => actorHostManager.AssignActor(a));
+            return leaseProvider.Start(startTimeout);
         }
 
         public void Stop()

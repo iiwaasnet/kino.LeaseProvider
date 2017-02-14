@@ -83,43 +83,43 @@ namespace kino.LeaseProvider
                    .As<IConfigProvider>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigProvider>().GetConfiguration<ApplicationConfiguration>())
-                   .As<ApplicationConfiguration>()
+            builder.Register(c => c.Resolve<IConfigProvider>().GetConfiguration<LeaseProviderServiceConfiguration>())
+                   .As<LeaseProviderServiceConfiguration>()
                    .SingleInstance();
 
-            builder.RegisterType<ConfigurationProvider>()
-                   .As<IConfigurationProvider>()
+            builder.RegisterType<LeaseConfigurationProvider>()
+                   .As<ILeaseConfigurationProvider>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetLeaseProviderConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetLeaseProviderConfiguration())
                    .As<LeaseProviderConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetRouterConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetRouterConfiguration())
                    .As<RouterConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetClusterMembershipConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetClusterMembershipConfiguration())
                    .As<ClusterMembershipConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetSynodConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetSynodConfiguration())
                    .As<Configuration.SynodConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetLeaseTimingConfiguration())
-                   .As<LeaseTimingConfiguration>()
-                   .SingleInstance();
-
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetLeaseConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetLeaseTimingConfiguration())
                    .As<LeaseConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetRendezvousEndpointsConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetLeaseConfiguration())
+                   .As<LeaseConfiguration>()
+                   .SingleInstance();
+
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetRendezvousEndpointsConfiguration())
                    .As<IEnumerable<RendezvousEndpoint>>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetMessageHubConfiguration())
+            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetMessageHubConfiguration())
                    .As<MessageHubConfiguration>()
                    .SingleInstance();
         }

@@ -7,7 +7,7 @@ using kino.Consensus.Configuration;
 using kino.Consensus.Messages;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
-using kino.Core.Messaging;
+using kino.Messaging;
 using Ballot = kino.Consensus.Ballot;
 using Lease = kino.Consensus.Lease;
 
@@ -66,7 +66,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseNackWriteMessage>();
 
-                return Unsafe.Equals(payload.Ballot.Identity, instance.Identity);
+                return Equals(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -78,7 +78,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseAckWriteMessage>();
 
-                return Unsafe.Equals(payload.Ballot.Identity, instance.Identity);
+                return Equals(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -90,7 +90,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseNackReadMessage>();
 
-                return Unsafe.Equals(payload.Ballot.Identity, instance.Identity);
+                return Equals(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -102,7 +102,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseAckReadMessage>();
 
-                return Unsafe.Equals(payload.Ballot.Identity, instance.Identity);
+                return Equals(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -114,7 +114,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseWriteMessage>();
 
-                return Unsafe.Equals(payload.Ballot.Identity, instance.Identity);
+                return Equals(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -126,7 +126,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseReadMessage>();
 
-                return Unsafe.Equals(payload.Ballot.Identity, instance.Identity);
+                return Equals(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
