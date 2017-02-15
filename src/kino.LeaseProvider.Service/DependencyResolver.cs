@@ -28,8 +28,9 @@ namespace kino.LeaseProvider.Service
                            ? container.Resolve<T>()
                            : context.Resolve<T>();
             }
-            catch (Exception)
+            catch
             {
+                //TODO: Decide on error handling...
                 return default(T);
             }
         }

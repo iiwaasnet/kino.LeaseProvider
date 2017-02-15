@@ -11,7 +11,7 @@ namespace kino.LeaseProvider
 {
     public partial class LeaseProviderService
     {
-        private void Build()
+        public void Build()
         {
             var logger = resolver.Resolve<ILogger>();
             var applicationConfig = resolver.Resolve<LeaseProviderServiceConfiguration>();

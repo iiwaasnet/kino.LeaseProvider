@@ -121,7 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="config\Application.config.json">
+    <None Include="config\LeaseProviderService.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="config\NLog.config">

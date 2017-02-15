@@ -42,7 +42,7 @@ namespace kino.LeaseProvider.Client
             Thread.Sleep(TimeSpan.FromSeconds(5));
             Console.WriteLine($"Client is running... {DateTime.Now}");
 
-            var instances = Enumerable.Range(0, 1000).Select(i => i.ToString()).ToArray();
+            var instances = Enumerable.Range(0, 10).Select(i => i.ToString()).ToArray();
             var rnd = new Random(DateTime.UtcNow.Millisecond);
 
             var partition = "test".GetBytes();

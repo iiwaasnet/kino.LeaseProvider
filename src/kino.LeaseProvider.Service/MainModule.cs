@@ -1,6 +1,8 @@
 ﻿using Autofac;
+using kino.Configuration;
 using kino.Core.Diagnostics;
 using kino.LeaseProvider.Configuration;
+using kino.Security;
 using TypedConfigProvider;
 
 namespace kino.LeaseProvider.Service
@@ -21,6 +23,10 @@ namespace kino.LeaseProvider.Service
                    .As<LeaseProviderServiceConfiguration>()
                    .SingleInstance();
 
+            builder.Register(c => c.Resolve<LeaseProviderServiceConfiguration>().Kino)
+                   .As<ApplicationConfiguration>()
+                   .SingleInstance();
+
             builder.Register(c => new Logger("default"))
                    .As<ILogger>()
                    .SingleInstance();
@@ -31,6 +37,10 @@ namespace kino.LeaseProvider.Service
 
             builder.Register(c => new LeaseProviderService(c.Resolve<IDependencyResolver>()))
                    .AsSelf()
+                   .SingleInstance();
+
+            builder.RegisterType<NullSecurityProvider>()
+                   .As<ISecurityProvider>()
                    .SingleInstance();
         }
     }

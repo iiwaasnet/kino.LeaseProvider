@@ -25,7 +25,7 @@ namespace kino.LeaseProvider
             {
                 return true;
             }
-            return Equals(other.Identity, Identity);
+            return Unsafe.ArraysEqual(other.Identity, Identity);
         }
 
         public override bool Equals(object obj)
@@ -50,13 +50,16 @@ namespace kino.LeaseProvider
 
         public static bool operator ==(Instance left, Instance right)
         {
-            return Equals(left, right);
+            if (ReferenceEquals(left, null))
+            {
+                return ReferenceEquals(right, null);
+            }
+
+            return left.Equals(right);
         }
 
         public static bool operator !=(Instance left, Instance right)
-        {
-            return !Equals(left, right);
-        }
+            => !(left == right);
 
         public override string ToString()
             => identity;
