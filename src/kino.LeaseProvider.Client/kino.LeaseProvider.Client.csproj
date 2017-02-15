@@ -114,9 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationConfiguration.cs" />
-    <Compile Include="ConfigurationProvider.cs" />
-    <Compile Include="IConfigurationProvider.cs" />
+    <Compile Include="DependencyResolver.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainModule.cs" />
     <Compile Include="Program.cs" />

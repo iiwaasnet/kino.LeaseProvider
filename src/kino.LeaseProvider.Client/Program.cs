@@ -25,7 +25,7 @@ namespace kino.LeaseProvider.Client
             var container = builder.Build();
 
             var messageRouter = container.Resolve<IMessageRouter>();
-            messageRouter.Start(TimeSpan.FromSeconds(3));
+            messageRouter.Start();
             // Needed to let router bind to socket over INPROC. To be fixed by NetMQ in future.
             Thread.Sleep(TimeSpan.FromMilliseconds(30));
 

@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using Autofac;
-using kino.Actors;
-using kino.Actors.Diagnostics;
-using kino.Client;
-using kino.Cluster.Configuration;
-using kino.Core.Connectivity;
+﻿using Autofac;
+using kino.Configuration;
 using kino.Core.Diagnostics;
 using TypedConfigProvider;
 
@@ -14,10 +9,6 @@ namespace kino.LeaseProvider.Client
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(c => new Logger("default"))
-                   .As<ILogger>()
-                   .SingleInstance();
-
             builder.RegisterType<ConfigProvider>()
                    .As<IConfigProvider>()
                    .SingleInstance();
@@ -30,28 +21,16 @@ namespace kino.LeaseProvider.Client
                    .As<ApplicationConfiguration>()
                    .SingleInstance();
 
-            builder.RegisterType<ConfigurationProvider>()
-                   .As<IConfigurationProvider>()
+            builder.Register(c => new Logger("default"))
+                   .As<ILogger>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetMessageHubConfiguration())
-                   .As<MessageHubConfiguration>()
+            builder.Register(c => new DependencyResolver(c))
+                   .As<IDependencyResolver>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetRouterConfiguration())
-                   .As<RouterConfiguration>()
-                   .SingleInstance();
-
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetRendezvousEndpointsConfiguration())
-                   .As<IEnumerable<RendezvousEndpoint>>()
-                   .SingleInstance();
-
-            builder.Register(c => c.Resolve<IConfigurationProvider>().GetClusterMembershipConfiguration())
-                   .As<ClusterMembershipConfiguration>()
-                   .SingleInstance();
-
-            builder.RegisterType<ExceptionHandlerActor>()
-                   .As<IActor>()
+            builder.Register(c => new kino(c.Resolve<IDependencyResolver>()))
+                   .AsSelf()
                    .SingleInstance();
         }
     }
