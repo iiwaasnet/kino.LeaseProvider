@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using kino.Actors;
-using kino.Client;
+using kino.Cluster.Configuration;
 using kino.Consensus;
 using kino.Consensus.Configuration;
-using kino.Core.Connectivity;
 using kino.Core.Diagnostics;
-using kino.Core.Messaging;
 using kino.LeaseProvider.Actors;
 using kino.LeaseProvider.Configuration;
+using kino.Messaging;
 using TypedConfigProvider;
 using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
 
@@ -26,7 +25,7 @@ namespace kino.LeaseProvider
             RegisterConsensus(builder);
 
             builder.RegisterType<LeaseProviderService>()
-                   .As<ILeaseProviderService>()
+                   .AsSelf()
                    .SingleInstance();
 
             builder.RegisterType<LeaseProviderActor>()
@@ -95,10 +94,6 @@ namespace kino.LeaseProvider
                    .As<LeaseProviderConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetRouterConfiguration())
-                   .As<RouterConfiguration>()
-                   .SingleInstance();
-
             builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetClusterMembershipConfiguration())
                    .As<ClusterMembershipConfiguration>()
                    .SingleInstance();
@@ -107,20 +102,12 @@ namespace kino.LeaseProvider
                    .As<Configuration.SynodConfiguration>()
                    .SingleInstance();
 
-            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetLeaseTimingConfiguration())
-                   .As<LeaseConfiguration>()
-                   .SingleInstance();
-
             builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetLeaseConfiguration())
                    .As<LeaseConfiguration>()
                    .SingleInstance();
 
             builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetRendezvousEndpointsConfiguration())
                    .As<IEnumerable<RendezvousEndpoint>>()
-                   .SingleInstance();
-
-            builder.Register(c => c.Resolve<ILeaseConfigurationProvider>().GetMessageHubConfiguration())
-                   .As<MessageHubConfiguration>()
                    .SingleInstance();
         }
     }

@@ -122,7 +122,6 @@
     <Compile Include="ConsensusMessages.cs" />
     <Compile Include="IInstanceLeaseProvider.cs" />
     <Compile Include="ILeaseProvider.cs" />
-    <Compile Include="ILeaseProviderService.cs" />
     <Compile Include="Instance.cs" />
     <Compile Include="InstanceLeaseProvider.Logging.cs" />
     <Compile Include="InstanceLeaseProvider.cs" />
