@@ -6,8 +6,6 @@ namespace kino.LeaseProvider.Configuration
     {
         public string ClusterName { get; set; }
 
-        public RendezvousConfiguration Rendezvous { get; set; }
-
         public SynodConfiguration Synod { get; set; }
 
         public LeaseConfiguration Lease { get; set; }

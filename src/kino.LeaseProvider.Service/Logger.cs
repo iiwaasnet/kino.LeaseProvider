@@ -1,6 +1,6 @@
 ﻿using kino.Core.Diagnostics;
 
-namespace kino.LeaseProvider
+namespace kino.LeaseProvider.Service
 {
     public class Logger : ILogger
     {

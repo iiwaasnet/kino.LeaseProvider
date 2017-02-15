@@ -6,7 +6,7 @@ namespace kino.LeaseProvider.Service
 {
     public class ServiceHost : WindowsService
     {
-        private ILeaseProviderService leaseProviderService;
+        private LeaseProviderService leaseProviderService;
         private static readonly TimeSpan StartTimeout = TimeSpan.FromSeconds(3);
 
         protected override ServiceConfiguration GetServiceConfiguration()
@@ -22,10 +22,9 @@ namespace kino.LeaseProvider.Service
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule<MainModule>();
-            builder.RegisterModule<KinoModule>();
             var container = builder.Build();
 
-            leaseProviderService = container.Resolve<ILeaseProviderService>();
+            leaseProviderService = container.Resolve<LeaseProviderService>();
             if (!leaseProviderService.Start(StartTimeout))
             {
                 throw new Exception($"Failed starting LeaseProvider after {StartTimeout.TotalMilliseconds} ms!");
