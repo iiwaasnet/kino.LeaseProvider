@@ -66,7 +66,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseNackWriteMessage>();
 
-                return Equals(payload.Ballot.Identity, instance.Identity);
+                return Unsafe.ArraysEqual(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -90,7 +90,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseNackReadMessage>();
 
-                return Equals(payload.Ballot.Identity, instance.Identity);
+                return Unsafe.ArraysEqual(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -102,7 +102,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseAckReadMessage>();
 
-                return Equals(payload.Ballot.Identity, instance.Identity);
+                return Unsafe.ArraysEqual(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -114,7 +114,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseWriteMessage>();
 
-                return Equals(payload.Ballot.Identity, instance.Identity);
+                return Unsafe.ArraysEqual(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
@@ -126,7 +126,7 @@ namespace kino.LeaseProvider
             {
                 var payload = message.GetPayload<LeaseReadMessage>();
 
-                return Equals(payload.Ballot.Identity, instance.Identity);
+                return Unsafe.ArraysEqual(payload.Ballot.Identity, instance.Identity);
             }
 
             return false;
