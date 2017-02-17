@@ -67,6 +67,6 @@ namespace kino.LeaseProvider.Actors
         }
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
-            => requestor.Uri == leaseOwner?.Uri && Equals(requestor.Identity, leaseOwner?.Identity);
+            => requestor.Uri == leaseOwner?.Uri && Unsafe.ArraysEqual(requestor.Identity, leaseOwner?.Identity);
     }
 }
