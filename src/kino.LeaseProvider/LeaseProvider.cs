@@ -68,11 +68,11 @@ namespace kino.LeaseProvider
             {
                 RequestInstanceDiscovery();
 
-                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} is not registered!");
+                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetAnyString()} is not registered!");
             }
             if (delayedWrap.InstanceLeaseProvider == null)
             {
-                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetString()} will be available " +
+                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetAnyString()} will be available " +
                                     $"in at most {leaseConfiguration.ClockDrift.TotalMilliseconds} ms.");
             }
 
@@ -97,7 +97,7 @@ namespace kino.LeaseProvider
                                                    : leaseConfiguration.ClockDrift
                       };
 
-            logger.Trace($"Requested LeaseProvider for Instance {instance.Identity.GetString()} " +
+            logger.Trace($"Requested LeaseProvider for Instance {instance.Identity.GetAnyString()} " +
                          $"will be active in {res.ActivationWaitTime.TotalSeconds} sec.");
 
             return res;

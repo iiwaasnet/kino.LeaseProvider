@@ -79,7 +79,7 @@ namespace kino.LeaseProvider.Client
                                           $"Aquired: {response.LeaseAquired} " +
                                           $"Instance: {response.Lease?.Instance} " +
                                           $"Owner: {response.Lease?.Owner.Uri} " +
-                                          $"OwnerIdentity: {response.Lease?.Owner.Identity.GetString()} " +
+                                          $"OwnerIdentity: {response.Lease?.Owner.Identity.GetAnyString()} " +
                                           $"RequestorIdentity: {ownerIdentity.GetString()} " +
                                           $"ExpiresAt: {response.Lease?.ExpiresAt}");
                         Thread.Sleep(TimeSpan.FromMilliseconds(100));

@@ -31,7 +31,7 @@ namespace kino.LeaseProvider
             this.leaseConfig = leaseConfig;
             this.logger = logger;
 
-            logger.Info($"{instance.Identity.GetString()}-InstanceLeaseProvider created");
+            logger.Info($"{instance.Identity.GetAnyString()}-InstanceLeaseProvider created");
         }
 
         public Lease GetLease(byte[] requestorIdentity, TimeSpan leaseTimeSpan)
