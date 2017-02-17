@@ -27,12 +27,13 @@ namespace kino.LeaseProvider
                                                             logger);
             var ballotGenerator = new BallotGenerator(applicationConfig.LeaseProvider.Lease);
             kino = new kino(resolver);
+            messageHub = kino.GetMessageHub();
             leaseProvider = new LeaseProvider(intercomMessageHub,
                                               ballotGenerator,
                                               synodConfig,
                                               applicationConfig.LeaseProvider.Lease,
                                               applicationConfig.LeaseProvider,
-                                              kino.GetMessageHub(),
+                                              messageHub,
                                               logger);
             var serializer = new ProtobufMessageSerializer();
             kino.AssignActor(new LeaseProviderActor(leaseProvider, serializer, applicationConfig.LeaseProvider));

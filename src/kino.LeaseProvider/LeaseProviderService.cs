@@ -1,4 +1,5 @@
 ﻿using System;
+using kino.Client;
 
 namespace kino.LeaseProvider
 {
@@ -8,6 +9,7 @@ namespace kino.LeaseProvider
         private ILeaseProvider leaseProvider;
         private kino kino;
         private bool isStarted;
+        private IMessageHub messageHub;
 
         public LeaseProviderService(IDependencyResolver resolver)
         {
@@ -26,6 +28,7 @@ namespace kino.LeaseProvider
             Build();
 
             kino.Start();
+            messageHub.Start();
             TimeSpan.FromMilliseconds(300).Sleep();
             isStarted = leaseProvider.Start(startTimeout);
 
@@ -35,6 +38,7 @@ namespace kino.LeaseProvider
         public void Stop()
         {
             leaseProvider.Stop();
+            messageHub.Start();
             kino.Stop();
 
             isStarted = false;
