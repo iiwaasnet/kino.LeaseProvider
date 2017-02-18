@@ -10,7 +10,7 @@
         <iconUrl>https://cdn.rawgit.com/iiwaasnet/kino/master/img/kino-50x50-v2.png</iconUrl>
         <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>LeaseProvider library build on the top of kino.</description>
+    <description>Lease coordination library messages</description>
     <releaseNotes>
 	</releaseNotes>
         <copyright>Copyright © 2015 Sergey Ivasenko</copyright>

@@ -5,10 +5,10 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>kino-LeaseProvider-Service</id>
     <title>kino.LeaseProvider.Service</title>
-    <version>0.0.0.2</version>
+    <version>0.0.1.2</version>
     <authors>Sergey Ivasenko</authors>
     <owners>Sergey Ivasenko</owners>
-    <description>Lease Provider Service for kino networks</description>
+    <description>Lease coordination service for kino networks</description>
     <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
     <packageSourceUrl>https://github.com/iiwaasnet/kino.LeaseProvider</packageSourceUrl>
     <tags>kino.LeaseProvider kino lease</tags>
