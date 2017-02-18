@@ -7,7 +7,7 @@ namespace kino.LeaseProvider.Messages
     [ProtoContract]
     public class CreateLeaseProviderInstanceResponseMessage : Payload
     {
-        private static readonly ushort MessageVersion = Contract.Version;
+        private const ushort MessageVersion = Contract.Version;
         private static readonly byte[] MessageIdentity = "CREATELPINSTRESP".BuildFullIdentity();
 
         [ProtoMember(1)]

@@ -1,5 +1,4 @@
-﻿using kino.Core.Framework;
-using kino.Messaging;
+﻿using kino.Messaging;
 using ProtoBuf;
 
 namespace kino.LeaseProvider.Messages
@@ -7,7 +6,7 @@ namespace kino.LeaseProvider.Messages
     [ProtoContract]
     public class CreateLeaseProviderInstanceRequestMessage : Payload
     {
-        private static readonly ushort MessageVersion = Contract.Version;
+        private const ushort MessageVersion = Contract.Version;
         private static readonly byte[] MessageIdentity = "CREATELPINSTREQ".BuildFullIdentity();
 
         [ProtoMember(1)]

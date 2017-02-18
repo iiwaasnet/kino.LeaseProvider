@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using kino.Core.Framework;
 using kino.Messaging;
 using ProtoBuf;
 
 namespace kino.LeaseProvider.Messages
 {
     [ProtoContract]
-    public class InternalDiscoverLeaseProviderInstancesResponseMessage : Payload
+    internal class InternalDiscoverLeaseProviderInstancesResponseMessage : Payload
     {
-        private static readonly ushort MessageVersion = Contract.Version;
+        private const ushort MessageVersion = Contract.Version;
         private static readonly byte[] MessageIdentity = "INT-DISCOVERLPINSTRESP".BuildFullIdentity();
 
         [ProtoMember(1)]

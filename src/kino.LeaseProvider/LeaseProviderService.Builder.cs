@@ -37,8 +37,8 @@ namespace kino.LeaseProvider
                                               logger);
             var serializer = new ProtobufMessageSerializer();
             kino.AssignActor(new LeaseProviderActor(leaseProvider, serializer, applicationConfig.LeaseProvider));
-            kino.AssignActor(new InstanceDiscoveryActor(leaseProvider, serializer, applicationConfig.LeaseProvider));
-            kino.AssignActor(new InstanceBuilderActor(leaseProvider, serializer, applicationConfig.LeaseProvider));
+            kino.AssignActor(new InstanceDiscoveryActor(leaseProvider, applicationConfig.LeaseProvider));
+            kino.AssignActor(new InstanceBuilderActor(leaseProvider, applicationConfig.LeaseProvider));
         }
     }
 }

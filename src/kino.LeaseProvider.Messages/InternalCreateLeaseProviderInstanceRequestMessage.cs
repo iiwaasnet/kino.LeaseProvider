@@ -4,9 +4,9 @@ using ProtoBuf;
 namespace kino.LeaseProvider.Messages
 {
     [ProtoContract]
-    public class InternalCreateLeaseProviderInstanceRequestMessage : Payload
+    internal class InternalCreateLeaseProviderInstanceRequestMessage : Payload
     {
-        private static readonly ushort MessageVersion = Contract.Version;
+        private const ushort MessageVersion = Contract.Version;
         private static readonly byte[] MessageIdentity = "INT-CREATELPINSTREQ".BuildFullIdentity();
 
         [ProtoMember(1)]

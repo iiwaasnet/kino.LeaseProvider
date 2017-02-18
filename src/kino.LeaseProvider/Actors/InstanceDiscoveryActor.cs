@@ -12,15 +12,12 @@ namespace kino.LeaseProvider.Actors
     public class InstanceDiscoveryActor : Actor
     {
         private readonly ILeaseProvider leaseProvider;
-        private readonly IMessageSerializer messageSerializer;
         private readonly byte[] clusterName;
 
         public InstanceDiscoveryActor(ILeaseProvider leaseProvider,
-                                      IMessageSerializer messageSerializer,
                                       LeaseProviderConfiguration leaseProviderConfiguration)
         {
             this.leaseProvider = leaseProvider;
-            this.messageSerializer = messageSerializer;
             clusterName = leaseProviderConfiguration.ClusterName.GetBytes();
         }
 

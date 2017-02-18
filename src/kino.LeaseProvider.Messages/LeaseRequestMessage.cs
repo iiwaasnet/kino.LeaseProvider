@@ -1,5 +1,4 @@
 ﻿using System;
-using kino.Core.Framework;
 using kino.Messaging;
 using ProtoBuf;
 
@@ -8,7 +7,7 @@ namespace kino.LeaseProvider.Messages
     [ProtoContract]
     public class LeaseRequestMessage : Payload
     {
-        private static readonly ushort MessageVersion = Contract.Version;
+        private const ushort MessageVersion = Contract.Version;
         private static readonly byte[] MessageIdentity = "LEASEREQ".BuildFullIdentity();
 
         [ProtoMember(1)]
