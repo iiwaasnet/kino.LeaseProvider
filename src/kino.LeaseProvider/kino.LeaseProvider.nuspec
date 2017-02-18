@@ -13,7 +13,7 @@
     <description>Lease coordination library for kino networks</description>
     <releaseNotes>
 	</releaseNotes>
-        <copyright>Copyright © 2015 Sergey Ivasenko</copyright>
+        <copyright>Copyright © 2016 Sergey Ivasenko</copyright>
         <tags>Actors framework</tags>
   </metadata>
 </package>
