@@ -12,8 +12,8 @@ namespace kino.LeaseProvider.Service
         protected override ServiceConfiguration GetServiceConfiguration()
             => new ServiceConfiguration
                {
-                   ServiceName = "kino.LeaseProvider",
-                   DisplayName = "kino.LeaseProvider",
+                   ServiceName = "kino.LeaseProvider.Service",
+                   DisplayName = "kino.LeaseProvider.Service",
                    OnStart = Start,
                    OnStop = Stop
                };

@@ -1,4 +1,6 @@
-﻿namespace kino.LeaseProvider.Configuration
+﻿using kino.Configuration;
+
+namespace kino.LeaseProvider.Configuration
 {
     public class LeaseProviderServiceConfiguration
     {

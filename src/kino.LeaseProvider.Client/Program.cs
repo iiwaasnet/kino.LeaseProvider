@@ -50,10 +50,10 @@ namespace kino.LeaseProvider.Client
             CreateLeaseProviderInstances(instances, messageHub, partition);
 
             var run = 0;
-
+            var ownerIdentity = Guid.NewGuid().ToByteArray();
             while (true)
             {
-                var ownerIdentity = Guid.NewGuid().ToByteArray();
+                
                 var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
                                                              {
                                                                  Instance = instances[rnd.Next(0, instances.Length - 1)],

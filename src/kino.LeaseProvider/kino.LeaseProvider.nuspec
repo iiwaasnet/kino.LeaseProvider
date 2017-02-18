@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>0.0.1.2</version>
+    <title>$title$</title>
+    <authors>Sergey Ivasenko</authors>
+    <owners>Sergey Ivasenko</owners>
+    <licenseUrl>https://github.com/iiwaasnet/kino.LeaseProvider/blob/master/LICENSE</licenseUrl>
+        <iconUrl>https://cdn.rawgit.com/iiwaasnet/kino/master/img/kino-50x50-v2.png</iconUrl>
+        <projectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>LeaseProvider library build on the top of kino.</description>
+    <releaseNotes>
+	</releaseNotes>
+        <copyright>Copyright © 2015 Sergey Ivasenko</copyright>
+        <tags>Actors framework</tags>
+  </metadata>
+</package>
