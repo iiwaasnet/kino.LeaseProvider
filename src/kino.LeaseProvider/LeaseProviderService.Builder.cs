@@ -1,4 +1,5 @@
-﻿using kino.Connectivity;
+﻿using kino.Actors.Diagnostics;
+using kino.Connectivity;
 using kino.Consensus;
 using kino.Core.Diagnostics;
 using kino.Core.Diagnostics.Performance;
@@ -39,6 +40,7 @@ namespace kino.LeaseProvider
             kino.AssignActor(new LeaseProviderActor(leaseProvider, serializer, applicationConfig.LeaseProvider));
             kino.AssignActor(new InstanceDiscoveryActor(leaseProvider, applicationConfig.LeaseProvider));
             kino.AssignActor(new InstanceBuilderActor(leaseProvider, applicationConfig.LeaseProvider));
+            kino.AssignActor(new ExceptionHandlerActor(logger));
         }
     }
 }
