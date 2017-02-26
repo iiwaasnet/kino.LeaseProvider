@@ -85,9 +85,7 @@ namespace kino.LeaseProvider
         }
 
         private bool IsLeaseOwner(Lease lease)
-        {
-            return lease != null && Equals(lease.OwnerIdentity, localNode.SocketIdentity);
-        }
+            => lease != null && Unsafe.ArraysEqual(lease.OwnerIdentity, localNode.SocketIdentity);
 
         private bool LeaseIsNotSafelyExpired(Lease lease)
         {
