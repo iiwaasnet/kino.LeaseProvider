@@ -36,7 +36,7 @@ namespace kino.LeaseProvider
 
         public Lease GetLease(byte[] requestorIdentity, TimeSpan leaseTimeSpan)
         {
-            if (LeaseNullOrExpired(lastKnownLease))
+            if (LeaseNullOrExpired(lastKnownLease) || IsLeaseOwner(requestorIdentity, lastKnownLease))
             {
                 ReadOrRenewLease(requestorIdentity, leaseTimeSpan);
             }
@@ -67,11 +67,11 @@ namespace kino.LeaseProvider
                     return AсquireOrLearnLease(ballotGenerator.New(instance.Identity), requestorIdentity, leaseTimeSpan);
                 }
 
-                if (LeaseNullOrExpired(lease) || IsLeaseOwner(lease))
+                if (LeaseNullOrExpired(lease) || IsLeaseOwner(requestorIdentity, lease))
                 {
                     var now = DateTime.UtcNow;
-                    LogLeaseProlonged(lease);
-                    lease = new Lease(localNode.SocketIdentity, now + leaseTimeSpan, requestorIdentity);
+                    LogLeaseProlonged(requestorIdentity, lease);
+                    lease = new Lease(requestorIdentity, now + leaseTimeSpan, requestorIdentity);
                 }
 
                 var write = register.Write(ballot, lease);
@@ -84,8 +84,8 @@ namespace kino.LeaseProvider
             return null;
         }
 
-        private bool IsLeaseOwner(Lease lease)
-            => lease != null && Unsafe.ArraysEqual(lease.OwnerIdentity, localNode.SocketIdentity);
+        private static bool IsLeaseOwner(byte[] requestorIdentity, Lease lease)
+            => lease != null && Unsafe.ArraysEqual(lease.OwnerIdentity, requestorIdentity);
 
         private bool LeaseIsNotSafelyExpired(Lease lease)
         {

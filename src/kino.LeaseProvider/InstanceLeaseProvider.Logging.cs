@@ -19,11 +19,11 @@ namespace kino.LeaseProvider
                          $"Sleep from {DateTime.UtcNow.ToString(format)}");
         }
 
-        private void LogLeaseProlonged(Lease lastReadLease)
+        private void LogLeaseProlonged(byte[] requestorIdentity, Lease lastReadLease)
         {
             if (lastReadLease != null)
             {
-                if (IsLeaseOwner(lastReadLease))
+                if (IsLeaseOwner(requestorIdentity, lastReadLease))
                 {
                     logger.Debug($"[{DateTime.UtcNow.ToString(format)}] " +
                                  "PROLONG === process " +
