@@ -16,6 +16,7 @@ namespace kino.LeaseProvider
         private readonly Node localNode;
         private readonly ILogger logger;
         private volatile Lease lastKnownLease;
+        private readonly TimeSpan minLeaseValidityPeriod;
 
         public InstanceLeaseProvider(Instance instance,
                                      IRoundBasedRegister register,
@@ -30,23 +31,31 @@ namespace kino.LeaseProvider
             this.ballotGenerator = ballotGenerator;
             this.leaseConfig = leaseConfig;
             this.logger = logger;
-
+            minLeaseValidityPeriod = leaseConfig.MessageRoundtrip.MultiplyBy(2) + leaseConfig.ClockDrift;
             logger.Info($"{instance.Identity.GetAnyString()}-InstanceLeaseProvider created");
         }
 
-        public Lease GetLease(byte[] requestorIdentity, TimeSpan leaseTimeSpan)
+        public Lease GetLease(GetLeaseRequest request)
         {
-            if (LeaseNullOrExpired(lastKnownLease) || IsLeaseOwner(requestorIdentity, lastKnownLease))
+            if (LeaseNullOrExpired(lastKnownLease)
+                || IsLeaseOwner(request.RequestorIdentity, lastKnownLease) && LeaseShouldBeProlonged(request, lastKnownLease))
             {
-                ReadOrRenewLease(requestorIdentity, leaseTimeSpan);
+                ReadOrRenewLease(request);
             }
 
             return lastKnownLease;
         }
 
-        private void ReadOrRenewLease(byte[] requestorIdentity, TimeSpan leaseTimeSpan)
+        private bool LeaseShouldBeProlonged(GetLeaseRequest request, Lease lastKnownLease)
+            => lastKnownLease.ExpiresAt - DateTime.UtcNow
+               <=
+               Max(minLeaseValidityPeriod, request.LeaseTimeSpan.DivideBy(Math.Max(request.MinValidityTimeFraction, 1)));
+
+        private void ReadOrRenewLease(GetLeaseRequest request)
         {
-            var lease = AсquireOrLearnLease(ballotGenerator.New(instance.Identity), requestorIdentity, leaseTimeSpan);
+            var lease = AсquireOrLearnLease(ballotGenerator.New(instance.Identity),
+                                            request.RequestorIdentity,
+                                            request.LeaseTimeSpan);
 
             lastKnownLease = lease;
         }
@@ -98,5 +107,10 @@ namespace kino.LeaseProvider
 
         private static bool LeaseNullOrExpired(Lease lease)
             => lease == null || lease.ExpiresAt < DateTime.UtcNow;
+
+        private static TimeSpan Max(TimeSpan left, TimeSpan right)
+            => left > right
+                   ? left
+                   : right;
     }
 }

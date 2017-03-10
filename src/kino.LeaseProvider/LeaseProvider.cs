@@ -59,9 +59,9 @@ namespace kino.LeaseProvider
         public void Stop()
             => intercomMessageHub.Stop();
 
-        public Lease GetLease(Instance instance, TimeSpan leaseTimeSpan, byte[] requestorIdentity)
+        public Lease GetLease(Instance instance, GetLeaseRequest leaseRequest)
         {
-            ValidateLeaseTimeSpan(leaseTimeSpan);
+            ValidateLeaseTimeSpan(leaseRequest.LeaseTimeSpan);
 
             DelayedInstanceWrap delayedWrap;
             if (!leaseProviders.TryGetValue(instance, out delayedWrap))
@@ -76,7 +76,12 @@ namespace kino.LeaseProvider
                                     $"in at most {leaseConfiguration.ClockDrift.TotalMilliseconds} ms.");
             }
 
-            return delayedWrap.InstanceLeaseProvider.GetLease(requestorIdentity, leaseTimeSpan);
+            return delayedWrap.InstanceLeaseProvider.GetLease(new GetLeaseRequest
+                                                              {
+                                                                  LeaseTimeSpan = leaseRequest.LeaseTimeSpan,
+                                                                  RequestorIdentity = leaseRequest.RequestorIdentity,
+                                                                  MinValidityTimeFraction = leaseRequest.MinValidityTimeFraction
+                                                              });
         }
 
         private void RequestInstanceDiscovery()
@@ -132,7 +137,7 @@ namespace kino.LeaseProvider
                                     $"{nameof(config.MessageRoundtrip)}[{config.MessageRoundtrip.TotalMilliseconds} msec]");
             }
             if (config.MaxLeaseTimeSpan
-                - TimeSpan.FromTicks(config.MessageRoundtrip.Ticks * 2)
+                - config.MessageRoundtrip.MultiplyBy(2)
                 - config.ClockDrift <= TimeSpan.Zero)
             {
                 throw new Exception($"{nameof(config.MaxLeaseTimeSpan)}[{config.MaxLeaseTimeSpan.TotalMilliseconds} msec] " +

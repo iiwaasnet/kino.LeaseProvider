@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
-    <id>kino-LeaseProvider-Service</id>
+    <id>kino-leaseprovider-service</id>
     <title>kino.LeaseProvider.Service</title>
     <version>0.0.1.2</version>
     <authors>Sergey Ivasenko</authors>

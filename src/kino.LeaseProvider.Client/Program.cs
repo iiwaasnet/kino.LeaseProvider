@@ -42,7 +42,7 @@ namespace kino.LeaseProvider.Client
             Thread.Sleep(TimeSpan.FromSeconds(5));
             Console.WriteLine($"Client is running... {DateTime.Now}");
 
-            var instances = Enumerable.Range(0, 10).Select(i => i.ToString()).ToArray();
+            var instances = Enumerable.Range(0, 1).Select(i => i.ToString()).ToArray();
             var rnd = new Random(DateTime.UtcNow.Millisecond);
 
             var partition = "test".GetBytes();
@@ -82,13 +82,18 @@ namespace kino.LeaseProvider.Client
                                           $"OwnerIdentity: {response.Lease?.Owner.Identity.GetAnyString()} " +
                                           $"RequestorIdentity: {ownerIdentity.GetString()} " +
                                           $"ExpiresAt: {response.Lease?.ExpiresAt}");
-                        Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                        Thread.Sleep(TimeSpan.FromMilliseconds(5000));
+                    }
+                    else
+                    {
+                        Console.WriteLine("Not a Leader");
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Call timed out after {waitTimeout.TotalSeconds} sec.");
                 }
+                TimeSpan.FromSeconds(2).Sleep();
             }
 
             Console.ReadLine();

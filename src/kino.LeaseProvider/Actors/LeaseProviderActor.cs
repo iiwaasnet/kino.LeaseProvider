@@ -40,8 +40,12 @@ namespace kino.LeaseProvider.Actors
             var payload = message.GetPayload<LeaseRequestMessage>();
 
             var lease = leaseProvider.GetLease(new Instance(payload.Instance),
-                                               payload.LeaseTimeSpan,
-                                               messageSerializer.Serialize(payload.Requestor));
+                                               new GetLeaseRequest
+                                               {
+                                                   LeaseTimeSpan = payload.LeaseTimeSpan,
+                                                   RequestorIdentity = messageSerializer.Serialize(payload.Requestor),
+                                                   MinValidityTimeFraction = payload.MinValidityTimeFraction
+                                               });
 
             var leaseOwner = (lease != null)
                                  ? messageSerializer.Deserialize<Node>(lease.OwnerPayload)

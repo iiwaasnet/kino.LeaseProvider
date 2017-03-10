@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using kino.Consensus.Configuration;
+using kino.Core.Framework;
 
 namespace kino.LeaseProvider.Configuration
 {
@@ -8,8 +10,10 @@ namespace kino.LeaseProvider.Configuration
     {
         public SynodConfigurationProvider(SynodConfiguration config)
         {
-            LocalNode = config.LocalNode;
-            Synod = config.Members;
+            LocalNode = config.LocalNode.ParseAddress();
+            Synod = config.Members
+                          .Select(m => m.ParseAddress())
+                          .ToList();
         }
 
         public Uri LocalNode { get; }

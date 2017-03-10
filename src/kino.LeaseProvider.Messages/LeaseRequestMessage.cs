@@ -19,6 +19,9 @@ namespace kino.LeaseProvider.Messages
         [ProtoMember(3)]
         public TimeSpan LeaseTimeSpan { get; set; }
 
+        [ProtoMember(4)]
+        public int MinValidityTimeFraction { get; set; }
+
         public override ushort Version => MessageVersion;
 
         public override byte[] Identity => MessageIdentity;

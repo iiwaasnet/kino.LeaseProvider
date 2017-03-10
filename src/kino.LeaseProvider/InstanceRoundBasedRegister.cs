@@ -236,14 +236,12 @@ namespace kino.LeaseProvider
         }
 
         private static LastWrittenLease CreateLastWrittenLease(LeaseAckReadMessage p)
-        {
-            return new LastWrittenLease(new Ballot(p.KnownWriteBallot.Timestamp, p.KnownWriteBallot.MessageNumber, p.KnownWriteBallot.Identity),
-                                        (p.Lease != null)
-                                            ? new Lease(p.Lease.Identity,
-                                                        p.Lease.ExpiresAt,
-                                                        p.Lease.OwnerPayload)
-                                            : null);
-        }
+            => new LastWrittenLease(new Ballot(p.KnownWriteBallot.Timestamp, p.KnownWriteBallot.MessageNumber, p.KnownWriteBallot.Identity),
+                                    (p.Lease != null)
+                                        ? new Lease(p.Lease.Identity,
+                                                    p.Lease.ExpiresAt,
+                                                    p.Lease.OwnerPayload)
+                                        : null);
 
         public LeaseTxResult Write(Ballot ballot, Lease lease)
         {
@@ -278,14 +276,10 @@ namespace kino.LeaseProvider
         }
 
         private static bool ReadNotAcknowledged(int index)
-        {
-            return index == 1 || index == WaitHandle.WaitTimeout;
-        }
+            => index == 1 || index == WaitHandle.WaitTimeout;
 
         private int GetQuorum()
-        {
-            return synodConfig.Synod.Count() / 2 + 1;
-        }
+            => synodConfig.Synod.Count() / 2 + 1;
 
         public void Dispose()
         {
@@ -294,36 +288,32 @@ namespace kino.LeaseProvider
         }
 
         private IMessage CreateWriteMessage(Ballot ballot, Lease lease)
-        {
-            return Message.Create(new LeaseWriteMessage
-                                  {
-                                      Ballot = new Consensus.Messages.Ballot
-                                               {
-                                                   Identity = ballot.Identity,
-                                                   Timestamp = ballot.Timestamp.Ticks,
-                                                   MessageNumber = ballot.MessageNumber
-                                               },
-                                      Lease = new Consensus.Messages.Lease
-                                              {
-                                                  Identity = lease.OwnerIdentity,
-                                                  ExpiresAt = lease.ExpiresAt.Ticks,
-                                                  OwnerPayload = lease.OwnerPayload
-                                              }
-                                  });
-        }
+            => Message.Create(new LeaseWriteMessage
+                              {
+                                  Ballot = new Consensus.Messages.Ballot
+                                           {
+                                               Identity = ballot.Identity,
+                                               Timestamp = ballot.Timestamp.Ticks,
+                                               MessageNumber = ballot.MessageNumber
+                                           },
+                                  Lease = new Consensus.Messages.Lease
+                                          {
+                                              Identity = lease.OwnerIdentity,
+                                              ExpiresAt = lease.ExpiresAt.Ticks,
+                                              OwnerPayload = lease.OwnerPayload
+                                          }
+                              });
 
         private IMessage CreateReadMessage(Ballot ballot)
-        {
-            return Message.Create(new LeaseReadMessage
-                                  {
-                                      Ballot = new Consensus.Messages.Ballot
-                                               {
-                                                   Identity = ballot.Identity,
-                                                   Timestamp = ballot.Timestamp.Ticks,
-                                                   MessageNumber = ballot.MessageNumber
-                                               }
-                                  });
-        }
+            => Message.Create(new LeaseReadMessage
+                              {
+                                  Ballot = new Consensus.Messages.Ballot
+                                           {
+                                               Identity = ballot.Identity,
+                                               Timestamp = ballot.Timestamp.Ticks,
+                                               MessageNumber = ballot.MessageNumber
+                                           }
+                              });
 
         private IMessage CreateLeaseAckReadMessage(LeaseReadMessage payload)
         {
