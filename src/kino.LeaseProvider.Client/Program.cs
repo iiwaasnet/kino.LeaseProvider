@@ -53,17 +53,18 @@ namespace kino.LeaseProvider.Client
             var ownerIdentity = Guid.NewGuid().ToByteArray();
             while (true)
             {
-                
+                var leaseTimeSpan = TimeSpan.FromSeconds(5);
                 var request = Message.CreateFlowStartMessage(new LeaseRequestMessage
                                                              {
                                                                  Instance = instances[rnd.Next(0, instances.Length - 1)],
-                                                                 LeaseTimeSpan = TimeSpan.FromSeconds(5),
+                                                                 LeaseTimeSpan = leaseTimeSpan,
                                                                  Requestor = new Node
                                                                              {
                                                                                  Identity = ownerIdentity,
                                                                                  Uri = "tpc://localhost"
                                                                              },
-                                                                 Partition = partition
+                                                                 Partition = partition,
+                                                                 MinValidityTimeFraction = 3
                                                              });
                 request.TraceOptions = MessageTraceOptions.None;
                 var callbackPoint = new CallbackPoint(MessageIdentifier.Create<LeaseResponseMessage>(partition));
@@ -82,7 +83,7 @@ namespace kino.LeaseProvider.Client
                                           $"OwnerIdentity: {response.Lease?.Owner.Identity.GetAnyString()} " +
                                           $"RequestorIdentity: {ownerIdentity.GetString()} " +
                                           $"ExpiresAt: {response.Lease?.ExpiresAt}");
-                        Thread.Sleep(TimeSpan.FromMilliseconds(5000));
+                        leaseTimeSpan.DivideBy(2).Sleep();
                     }
                     else
                     {
