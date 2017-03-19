@@ -77,7 +77,7 @@ namespace kino.LeaseProvider.Client
                     if (response.LeaseAquired)
                     {
                         Console.WriteLine($"{DateTime.UtcNow} " +
-                                          $"Aquired: {response.LeaseAquired} " +
+                                          $"Acquired: {response.LeaseAquired} " +
                                           $"Instance: {response.Lease?.Instance} " +
                                           $"Owner: {response.Lease?.Owner.Uri} " +
                                           $"OwnerIdentity: {response.Lease?.Owner.Identity.GetAnyString()} " +

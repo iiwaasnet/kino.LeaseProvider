@@ -41,41 +41,41 @@
       <HintPath>..\packages\Autofac.4.4.0\lib\net45\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="Autofac.kino, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\Autofac.kino.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\Autofac.kino.dll</HintPath>
     </Reference>
     <Reference Include="C5, Version=2.4.5947.17248, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
       <HintPath>..\packages\C5.2.4.5947.17249\lib\net45\C5.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kino, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\kino.0.0.1.28\lib\net461\kino.dll</HintPath>
+      <HintPath>..\packages\kino.0.0.1.29\lib\net461\kino.dll</HintPath>
     </Reference>
     <Reference Include="kino.Actors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Actors.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Actors.dll</HintPath>
     </Reference>
     <Reference Include="kino.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Client.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Client.dll</HintPath>
     </Reference>
     <Reference Include="kino.Cluster, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Cluster.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Cluster.dll</HintPath>
     </Reference>
     <Reference Include="kino.Connectivity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Connectivity.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Connectivity.dll</HintPath>
     </Reference>
     <Reference Include="kino.Consensus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\kino.Consensus.0.0.1.28\lib\net461\kino.Consensus.dll</HintPath>
+      <HintPath>..\packages\kino.Consensus.0.0.1.29\lib\net461\kino.Consensus.dll</HintPath>
     </Reference>
     <Reference Include="kino.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Core.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Core.dll</HintPath>
     </Reference>
     <Reference Include="kino.Messaging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Messaging.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Messaging.dll</HintPath>
     </Reference>
     <Reference Include="kino.Routing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Routing.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Routing.dll</HintPath>
     </Reference>
     <Reference Include="kino.Security, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.kino.0.0.1.28\lib\net461\kino.Security.dll</HintPath>
+      <HintPath>..\packages\Autofac.kino.0.0.1.29\lib\net461\kino.Security.dll</HintPath>
     </Reference>
     <Reference Include="NetMQ, Version=4.0.0.1, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
       <HintPath>..\packages\NetMQ.4.0.0.1\lib\net40\NetMQ.dll</HintPath>
