@@ -10,7 +10,7 @@ namespace kino.LeaseProvider.Messages
         private static readonly byte[] MessageIdentity = "LEASERESP".BuildFullIdentity();
 
         [ProtoMember(1)]
-        public bool LeaseAquired { get; set; }
+        public bool LeaseAcquired { get; set; }
 
         [ProtoMember(2)]
         public Lease Lease { get; set; }

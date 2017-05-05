@@ -55,7 +55,7 @@ namespace kino.LeaseProvider.Actors
 
             var result = Message.Create(new LeaseResponseMessage
                                         {
-                                            LeaseAquired = requestorWonTheLease,
+                                            LeaseAcquired = requestorWonTheLease,
                                             Lease = requestorWonTheLease
                                                         ? new Lease
                                                           {

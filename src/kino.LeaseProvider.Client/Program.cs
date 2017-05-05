@@ -74,10 +74,10 @@ namespace kino.LeaseProvider.Client
                 {
                     var response = promise.GetResponse().Result.GetPayload<LeaseResponseMessage>();
 
-                    if (response.LeaseAquired)
+                    if (response.LeaseAcquired)
                     {
                         Console.WriteLine($"{DateTime.UtcNow} " +
-                                          $"Acquired: {response.LeaseAquired} " +
+                                          $"Acquired: {response.LeaseAcquired} " +
                                           $"Instance: {response.Lease?.Instance} " +
                                           $"Owner: {response.Lease?.Owner.Uri} " +
                                           $"OwnerIdentity: {response.Lease?.Owner.Identity.GetAnyString()} " +
