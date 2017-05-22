@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>0.0.1.5</version>
+    <version>0.0.1.6</version>
     <title>$title$</title>
     <authors>Sergey Ivasenko</authors>
     <owners>Sergey Ivasenko</owners>
@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Lease coordination library for kino networks</description>
     <releaseNotes>
-	</releaseNotes>
+    </releaseNotes>
         <copyright>Copyright © 2016 Sergey Ivasenko</copyright>
         <tags>Actors framework</tags>
   </metadata>
