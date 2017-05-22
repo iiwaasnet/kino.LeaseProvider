@@ -111,6 +111,20 @@ namespace kino.LeaseProvider
         public IEnumerable<Instance> GetRegisteredInstances()
             => leaseProviders.Keys.ToList();
 
+        public InstanceStatus GetInstanceStatus(Instance instance)
+        {
+            if (leaseProviders.TryGetValue(instance, out var wrap))
+            {
+                return new InstanceStatus
+                       {
+                           Instance = instance,
+                           ConsensusIsReached = wrap.InstanceLeaseProvider.IsConsensusReached()
+                       };
+            }
+
+            throw new Exception($"Instance {instance.Identity} is not found!");
+        }
+
         private DelayedInstanceWrap CreateDelayedInstanceLeaseProvider(Instance instance)
             => new DelayedInstanceWrap(instance,
                                        intercomMessageHub,

@@ -46,6 +46,9 @@ namespace kino.LeaseProvider
             return lastKnownLease;
         }
 
+        public bool IsConsensusReached()
+            => lastKnownLease != null;
+
         private bool LeaseShouldBeProlonged(GetLeaseRequest request, Lease lastKnownLease)
             => lastKnownLease.ExpiresAt - DateTime.UtcNow
                <=

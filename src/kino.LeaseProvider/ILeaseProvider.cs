@@ -12,6 +12,8 @@ namespace kino.LeaseProvider
 
         IEnumerable<Instance> GetRegisteredInstances();
 
+        InstanceStatus GetInstanceStatus(Instance instance);
+
         bool Start(TimeSpan startTimeout);
 
         void Stop();

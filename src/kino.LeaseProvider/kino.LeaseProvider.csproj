@@ -112,6 +112,7 @@
     <Compile Include="Actors\InstanceBuilderActor.cs" />
     <Compile Include="Actors\InstanceDiscoveryActor.cs" />
     <Compile Include="GetLeaseRequest.cs" />
+    <Compile Include="InstanceStatus.cs" />
     <Compile Include="LeaseProviderService.Builder.cs" />
     <Compile Include="Configuration\LeaseProviderServiceConfiguration.cs" />
     <Compile Include="Configuration\LeaseProviderConfiguration.cs" />
