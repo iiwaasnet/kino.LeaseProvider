@@ -27,6 +27,10 @@ namespace Autofac.kino.LeaseProvider
                    .AsSelf()
                    .SingleInstance();
 
+            builder.Register(c => c.Resolve<LeaseProviderServiceConfiguration>().Kino)
+                   .AsSelf()
+                   .SingleInstance();
+
             builder.RegisterType<SynodConfigurationProvider>()
                    .As<ISynodConfigurationProvider>()
                    .SingleInstance();
@@ -44,7 +48,7 @@ namespace Autofac.kino.LeaseProvider
                    .SingleInstance();
 
             builder.RegisterType<global::kino.LeaseProvider.LeaseProvider>()
-                   .As<ILeaseProvider>()
+                   .As<global::kino.LeaseProvider.ILeaseProvider>()
                    .SingleInstance();
 
             builder.RegisterType<ProtobufMessageSerializer>()
