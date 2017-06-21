@@ -108,6 +108,7 @@
     <Compile Include="CreateLeaseProviderInstanceRequestMessage.cs" />
     <Compile Include="IdentityBuilder.cs" />
     <Compile Include="Lease.cs" />
+    <Compile Include="LeaseInstanceNotRegisteredMessage.cs" />
     <Compile Include="LeaseResponseMessage.cs" />
     <Compile Include="LeaseRequestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

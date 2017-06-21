@@ -68,7 +68,7 @@ namespace kino.LeaseProvider
             {
                 RequestInstanceDiscovery();
 
-                throw new Exception($"LeaseProvider for Instance {instance.Identity.GetAnyString()} is not registered!");
+                throw new InstanceNotRegisteredException(instance.Identity.GetAnyString());
             }
             if (delayedWrap.InstanceLeaseProvider == null)
             {

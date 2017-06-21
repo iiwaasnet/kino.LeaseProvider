@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using kino.Actors;
+using kino.Core.Diagnostics;
 using kino.Core.Framework;
 using kino.LeaseProvider.Configuration;
 using kino.LeaseProvider.Messages;
@@ -12,62 +13,76 @@ namespace kino.LeaseProvider.Actors
     {
         private readonly ILeaseProvider leaseProvider;
         private readonly IMessageSerializer messageSerializer;
+        private readonly ILogger logger;
         private readonly byte[] clusterName;
 
         public LeaseProviderActor(ILeaseProvider leaseProvider,
                                   IMessageSerializer messageSerializer,
-                                  LeaseProviderConfiguration leaseProviderConfiguration)
+                                  LeaseProviderConfiguration leaseProviderConfiguration,
+                                  ILogger logger)
         {
             this.leaseProvider = leaseProvider;
             this.messageSerializer = messageSerializer;
+            this.logger = logger;
             clusterName = leaseProviderConfiguration.ClusterName.GetBytes();
         }
 
         public override IEnumerable<MessageHandlerDefinition> GetInterfaceDefinition()
-        {
-            return new[]
+            => new[]
+               {
+                   new MessageHandlerDefinition
                    {
-                       new MessageHandlerDefinition
-                       {
-                           Message = MessageDefinition.Create<LeaseRequestMessage>(clusterName),
-                           Handler = GetLease
-                       }
-                   };
-        }
+                       Message = MessageDefinition.Create<LeaseRequestMessage>(clusterName),
+                       Handler = GetLease
+                   }
+               };
 
         private async Task<IActorResult> GetLease(IMessage message)
         {
             var payload = message.GetPayload<LeaseRequestMessage>();
 
-            var lease = leaseProvider.GetLease(new Instance(payload.Instance),
-                                               new GetLeaseRequest
-                                               {
-                                                   LeaseTimeSpan = payload.LeaseTimeSpan,
-                                                   RequestorIdentity = messageSerializer.Serialize(payload.Requestor),
-                                                   MinValidityTimeFraction = payload.MinValidityTimeFraction
-                                               });
+            try
+            {
+                var lease = leaseProvider.GetLease(new Instance(payload.Instance),
+                                                   new GetLeaseRequest
+                                                   {
+                                                       LeaseTimeSpan = payload.LeaseTimeSpan,
+                                                       RequestorIdentity = messageSerializer.Serialize(payload.Requestor),
+                                                       MinValidityTimeFraction = payload.MinValidityTimeFraction
+                                                   });
 
-            var leaseOwner = (lease != null)
-                                 ? messageSerializer.Deserialize<Node>(lease.OwnerPayload)
-                                 : null;
+                var leaseOwner = (lease != null)
+                                     ? messageSerializer.Deserialize<Node>(lease.OwnerPayload)
+                                     : null;
 
-            var requestorWonTheLease = RequestorWonTheLease(payload.Requestor, leaseOwner);
+                var requestorWonTheLease = RequestorWonTheLease(payload.Requestor, leaseOwner);
 
-            var result = Message.Create(new LeaseResponseMessage
-                                        {
-                                            LeaseAcquired = requestorWonTheLease,
-                                            Lease = requestorWonTheLease
-                                                        ? new Lease
-                                                          {
-                                                              Instance = payload.Instance,
-                                                              ExpiresAt = lease.ExpiresAt,
-                                                              Owner = leaseOwner
-                                                          }
-                                                        : null,
-                                            Partition = clusterName
-                                        });
+                var result = Message.Create(new LeaseResponseMessage
+                                            {
+                                                LeaseAcquired = requestorWonTheLease,
+                                                Lease = requestorWonTheLease
+                                                            ? new Lease
+                                                              {
+                                                                  Instance = payload.Instance,
+                                                                  ExpiresAt = lease.ExpiresAt,
+                                                                  Owner = leaseOwner
+                                                              }
+                                                            : null,
+                                                Partition = clusterName
+                                            });
 
-            return new ActorResult(result);
+                return new ActorResult(result);
+            }
+            catch (InstanceNotRegisteredException err)
+            {
+                logger.Error(err);
+
+                return new ActorResult(Message.Create(new LeaseInstanceNotRegisteredMessage
+                                                      {
+                                                          Instance = payload.Instance,
+                                                          Partition = clusterName
+                                                      }));
+            }
         }
 
         private bool RequestorWonTheLease(Node requestor, Node leaseOwner)
