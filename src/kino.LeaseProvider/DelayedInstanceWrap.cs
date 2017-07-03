@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using kino.Consensus;
 using kino.Consensus.Configuration;
 using kino.Core.Diagnostics;
+using kino.LeaseProvider.Configuration;
 
 namespace kino.LeaseProvider
 {
@@ -11,7 +12,7 @@ namespace kino.LeaseProvider
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
         private readonly ISynodConfiguration synodConfig;
-        private readonly LeaseConfiguration leaseConfig;
+        private readonly InstanceLeaseProviderConfiguration leaseConfig;
         private readonly ILogger logger;
         private InstanceLeaseProvider instanceLeaseProvider;
 
@@ -19,7 +20,7 @@ namespace kino.LeaseProvider
                                    IIntercomMessageHub intercomMessageHub,
                                    IBallotGenerator ballotGenerator,
                                    ISynodConfiguration synodConfig,
-                                   LeaseConfiguration leaseConfig,
+                                   InstanceLeaseProviderConfiguration leaseConfig,
                                    ILogger logger)
         {
             this.intercomMessageHub = intercomMessageHub;

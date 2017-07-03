@@ -1,4 +1,4 @@
-using kino.Consensus.Configuration;
+using System;
 
 namespace kino.LeaseProvider.Configuration
 {
@@ -8,6 +8,8 @@ namespace kino.LeaseProvider.Configuration
 
         public SynodConfiguration Synod { get; set; }
 
-        public LeaseConfiguration Lease { get; set; }
+        public InstanceLeaseProviderConfiguration Lease { get; set; }
+
+        public TimeSpan StaleInstancesCleanupPeriod { get; set; }
     }
 }

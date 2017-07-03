@@ -4,6 +4,7 @@ using kino.Consensus.Configuration;
 using kino.Core;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
+using kino.LeaseProvider.Configuration;
 
 namespace kino.LeaseProvider
 {
@@ -12,19 +13,21 @@ namespace kino.LeaseProvider
         private readonly Instance instance;
         private readonly IRoundBasedRegister register;
         private readonly IBallotGenerator ballotGenerator;
-        private readonly LeaseConfiguration leaseConfig;
+        private readonly InstanceLeaseProviderConfiguration leaseConfig;
         private readonly Node localNode;
         private readonly ILogger logger;
         private volatile Lease lastKnownLease;
         private readonly TimeSpan minLeaseValidityPeriod;
+        private readonly DateTime instanceStartDateTime;
 
         public InstanceLeaseProvider(Instance instance,
                                      IRoundBasedRegister register,
                                      IBallotGenerator ballotGenerator,
-                                     LeaseConfiguration leaseConfig,
+                                     InstanceLeaseProviderConfiguration leaseConfig,
                                      ISynodConfiguration synodConfig,
                                      ILogger logger)
         {
+            instanceStartDateTime = DateTime.UtcNow;
             localNode = synodConfig.LocalNode;
             this.instance = instance;
             this.register = register;
@@ -48,6 +51,11 @@ namespace kino.LeaseProvider
 
         public bool IsConsensusReached()
             => lastKnownLease != null;
+
+        public bool IsInstanceStale()
+            => DateTime.UtcNow - (lastKnownLease?.ExpiresAt ?? instanceStartDateTime)
+               >
+               leaseConfig.LeaseProviderIsStaleAfter;
 
         private bool LeaseShouldBeProlonged(GetLeaseRequest request, Lease lastKnownLease)
             => lastKnownLease.ExpiresAt - DateTime.UtcNow

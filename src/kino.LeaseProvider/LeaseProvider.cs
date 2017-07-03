@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using kino.Client;
 using kino.Consensus;
 using kino.Consensus.Configuration;
@@ -19,16 +20,18 @@ namespace kino.LeaseProvider
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
         private readonly ISynodConfiguration synodConfig;
-        private readonly LeaseConfiguration leaseConfiguration;
+        private readonly InstanceLeaseProviderConfiguration leaseConfiguration;
         private readonly byte[] clusterName;
         private readonly IMessageHub messageHub;
         private readonly ILogger logger;
         private readonly ConcurrentDictionary<Instance, DelayedInstanceWrap> leaseProviders;
+        private readonly TimeSpan staleInstancesCleanupPeriod;
+        private Timer cleanUpTimer;
 
         public LeaseProvider(IIntercomMessageHub intercomMessageHub,
                              IBallotGenerator ballotGenerator,
                              ISynodConfiguration synodConfig,
-                             LeaseConfiguration leaseConfiguration,
+                             InstanceLeaseProviderConfiguration leaseConfiguration,
                              LeaseProviderConfiguration leaseProviderConfiguration,
                              IMessageHub messageHub,
                              ILogger logger)
@@ -42,6 +45,7 @@ namespace kino.LeaseProvider
             this.messageHub = messageHub;
             this.logger = logger;
             clusterName = leaseProviderConfiguration.ClusterName.GetBytes();
+            staleInstancesCleanupPeriod = leaseProviderConfiguration.StaleInstancesCleanupPeriod;
             leaseProviders = new ConcurrentDictionary<Instance, DelayedInstanceWrap>();
         }
 
@@ -50,14 +54,32 @@ namespace kino.LeaseProvider
             if (intercomMessageHub.Start(startTimeout))
             {
                 RequestInstanceDiscovery();
+                cleanUpTimer = new Timer(_ => CleanUpStaleInstances(),
+                                         null,
+                                         TimeSpan.Zero,
+                                         staleInstancesCleanupPeriod);
                 return true;
             }
 
             return false;
         }
 
+        private void CleanUpStaleInstances()
+        {
+            var staleInstances = leaseProviders.Where(kv => kv.Value.InstanceLeaseProvider.IsInstanceStale())
+                                               .Select(kv => kv.Key)
+                                               .ToList();
+            foreach (var staleInstance in staleInstances)
+            {
+                leaseProviders.TryRemove(staleInstance, out var _);
+            }
+        }
+
         public void Stop()
-            => intercomMessageHub.Stop();
+        {
+            cleanUpTimer?.Dispose();
+            intercomMessageHub.Stop();
+        }
 
         public Lease GetLease(Instance instance, GetLeaseRequest leaseRequest)
         {

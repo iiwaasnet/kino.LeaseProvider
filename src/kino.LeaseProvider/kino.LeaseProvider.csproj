@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="Actors\InstanceBuilderActor.cs" />
     <Compile Include="Actors\InstanceDiscoveryActor.cs" />
+    <Compile Include="Configuration\InstanceLeaseProviderConfiguration.cs" />
     <Compile Include="GetLeaseRequest.cs" />
     <Compile Include="InstanceNotRegisteredException.cs" />
     <Compile Include="InstanceStatus.cs" />

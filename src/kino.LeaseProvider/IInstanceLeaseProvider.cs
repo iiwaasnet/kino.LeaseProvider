@@ -7,5 +7,7 @@ namespace kino.LeaseProvider
         Lease GetLease(GetLeaseRequest request);
 
         bool IsConsensusReached();
+
+        bool IsInstanceStale();
     }
 }
