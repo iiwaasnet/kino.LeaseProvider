@@ -57,6 +57,9 @@ namespace kino.LeaseProvider
                >
                leaseConfig.LeaseProviderIsStaleAfter;
 
+        public void Dispose()
+            => register.Dispose();
+
         private bool LeaseShouldBeProlonged(GetLeaseRequest request, Lease lastKnownLease)
             => lastKnownLease.ExpiresAt - DateTime.UtcNow
                <=

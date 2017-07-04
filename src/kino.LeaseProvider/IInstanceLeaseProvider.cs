@@ -1,8 +1,9 @@
-﻿using kino.Consensus;
+﻿using System;
+using kino.Consensus;
 
 namespace kino.LeaseProvider
 {
-    public interface IInstanceLeaseProvider
+    public interface IInstanceLeaseProvider : IDisposable
     {
         Lease GetLease(GetLeaseRequest request);
 

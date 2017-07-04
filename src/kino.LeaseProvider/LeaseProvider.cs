@@ -71,7 +71,10 @@ namespace kino.LeaseProvider
                                                .ToList();
             foreach (var staleInstance in staleInstances)
             {
-                leaseProviders.TryRemove(staleInstance, out var _);
+                if (leaseProviders.TryRemove(staleInstance, out var wrap))
+                {
+                    wrap.InstanceLeaseProvider.Dispose();
+                }
             }
         }
 
@@ -79,6 +82,8 @@ namespace kino.LeaseProvider
         {
             cleanUpTimer?.Dispose();
             intercomMessageHub.Stop();
+            leaseProviders.Values.ForEach(v => v.InstanceLeaseProvider.Dispose());
+            leaseProviders.Clear();
         }
 
         public Lease GetLease(Instance instance, GetLeaseRequest leaseRequest)

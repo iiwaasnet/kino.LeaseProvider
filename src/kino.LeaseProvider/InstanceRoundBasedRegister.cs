@@ -282,10 +282,7 @@ namespace kino.LeaseProvider
             => synodConfig.Synod.Count() / 2 + 1;
 
         public void Dispose()
-        {
-            intercomMessageHub.Stop();
-            listener.Dispose();
-        }
+            => listener.Dispose();
 
         private IMessage CreateWriteMessage(Ballot ballot, Lease lease)
             => Message.Create(new LeaseWriteMessage
