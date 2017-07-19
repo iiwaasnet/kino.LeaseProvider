@@ -66,18 +66,25 @@ namespace kino.LeaseProvider
 
         private void CleanUpStaleInstances()
         {
-            var staleInstances = leaseProviders.Where(kv => kv.Value.InstanceLeaseProvider.IsInstanceStale())
-                                               .Select(kv => kv.Key)
-                                               .ToList();
-            foreach (var staleInstance in staleInstances)
+            try
             {
-                if (leaseProviders.TryRemove(staleInstance, out var wrap))
+                var staleInstances = leaseProviders.Where(kv => kv.Value.InstanceLeaseProvider.IsInstanceStale())
+                                                   .Select(kv => kv.Key)
+                                                   .ToList();
+                foreach (var staleInstance in staleInstances)
                 {
-                    wrap.InstanceLeaseProvider.Dispose();
+                    if (leaseProviders.TryRemove(staleInstance, out var wrap))
+                    {
+                        wrap.InstanceLeaseProvider.Dispose();
 
-                    logger.Warn($"LeaseProvider for Instance [{staleInstance.Identity.GetAnyString()}] "
-                                + $"is cleaned up due to inactivity of [{leaseConfiguration.LeaseProviderIsStaleAfter.TotalSeconds}] sec.");
+                        logger.Warn($"LeaseProvider for Instance [{staleInstance.Identity.GetAnyString()}] "
+                                    + $"is cleaned up due to inactivity of [{leaseConfiguration.LeaseProviderIsStaleAfter.TotalSeconds}] sec.");
+                    }
                 }
+            }
+            catch (Exception err)
+            {
+                logger.Error(err);
             }
         }
 
