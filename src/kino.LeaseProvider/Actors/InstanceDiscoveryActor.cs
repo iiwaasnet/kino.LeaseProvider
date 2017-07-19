@@ -22,21 +22,19 @@ namespace kino.LeaseProvider.Actors
         }
 
         public override IEnumerable<MessageHandlerDefinition> GetInterfaceDefinition()
-        {
-            return new[]
+            => new[]
+               {
+                   new MessageHandlerDefinition
                    {
-                       new MessageHandlerDefinition
-                       {
-                           Message = MessageDefinition.Create<InternalDiscoverLeaseProviderInstancesRequestMessage>(clusterName),
-                           Handler = InternalDiscoverLeaseProviderInstancesRequest
-                       },
-                       new MessageHandlerDefinition
-                       {
-                           Message = MessageDefinition.Create<InternalDiscoverLeaseProviderInstancesResponseMessage>(clusterName),
-                           Handler = InternalDiscoverLeaseProviderInstancesResponse
-                       }
-                   };
-        }
+                       Message = MessageDefinition.Create<InternalDiscoverLeaseProviderInstancesRequestMessage>(clusterName),
+                       Handler = InternalDiscoverLeaseProviderInstancesRequest
+                   },
+                   new MessageHandlerDefinition
+                   {
+                       Message = MessageDefinition.Create<InternalDiscoverLeaseProviderInstancesResponseMessage>(clusterName),
+                       Handler = InternalDiscoverLeaseProviderInstancesResponse
+                   }
+               };
 
         private async Task<IActorResult> InternalDiscoverLeaseProviderInstancesRequest(IMessage message)
         {

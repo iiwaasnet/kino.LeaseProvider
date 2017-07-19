@@ -74,6 +74,9 @@ namespace kino.LeaseProvider
                 if (leaseProviders.TryRemove(staleInstance, out var wrap))
                 {
                     wrap.InstanceLeaseProvider.Dispose();
+
+                    logger.Warn($"LeaseProvider for Instance [{staleInstance.Identity.GetAnyString()}] "
+                                + $"is cleaned up due to inactivity of [{leaseConfiguration.LeaseProviderIsStaleAfter.TotalSeconds}] sec.");
                 }
             }
         }

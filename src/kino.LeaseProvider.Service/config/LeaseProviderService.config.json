@@ -29,6 +29,7 @@
             ]
         },
         "leaseProvider": {
+            "staleInstancesCleanupPeriod": "00:01:00",
             "clusterName": "test",
             "synod": {
                 "localNode": "tcp://*:9001",
@@ -44,7 +45,7 @@
                 "clockDrift": "00:00:00.100",
                 "messageRoundtrip": "00:00:00.400",
                 "nodeResponseTimeout": "00:00:00.200",
-                "leaseProviderIsStaleAfter": "00:05:00" 
+                "leaseProviderIsStaleAfter": "00:05:00"
             }
         }
     }
