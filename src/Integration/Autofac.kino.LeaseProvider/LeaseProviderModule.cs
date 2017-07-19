@@ -25,6 +25,7 @@ namespace Autofac.kino.LeaseProvider
 
             builder.Register(c => c.Resolve<LeaseProviderServiceConfiguration>().LeaseProvider.Lease)
                    .AsSelf()
+                   .As<LeaseConfiguration>()
                    .SingleInstance();
 
             builder.Register(c => c.Resolve<LeaseProviderServiceConfiguration>().Kino)
