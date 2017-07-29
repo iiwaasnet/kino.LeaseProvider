@@ -33,6 +33,9 @@
             "clusterName": "test",
             "synod": {
                 "localNode": "tcp://*:9001",
+                "heartBeatInterval": "00:00:05",
+                "missingHeartBeatsBeforeReconnect": "4",
+                "intercomEndpoint": "inproc://quorum-health",
                 "members": [
                     "tcp://192.168.0.18:9001",
                     "tcp://192.168.0.18:9002",
