@@ -20,7 +20,7 @@ namespace kino.LeaseProvider
         private Ballot writeBallot;
         private Lease lease;
         private readonly Listener listener;
-        private readonly ISynodConfiguration synodConfig;
+        private readonly ISynodConfigurationProvider synodConfigProvider;
         private readonly LeaseConfiguration leaseConfig;
         private readonly Instance instance;
         private readonly ILogger logger;
@@ -33,13 +33,13 @@ namespace kino.LeaseProvider
         public InstanceRoundBasedRegister(Instance instance,
                                           IIntercomMessageHub intercomMessageHub,
                                           IBallotGenerator ballotGenerator,
-                                          ISynodConfiguration synodConfig,
+                                          ISynodConfigurationProvider synodConfigProvider,
                                           LeaseConfiguration leaseConfig,
                                           ILogger logger)
         {
             this.instance = instance;
             this.logger = logger;
-            this.synodConfig = synodConfig;
+            this.synodConfigProvider = synodConfigProvider;
             this.leaseConfig = leaseConfig;
             this.intercomMessageHub = intercomMessageHub;
             readBallot = ballotGenerator.Null();
@@ -147,7 +147,7 @@ namespace kino.LeaseProvider
                 response = Message.Create(new LeaseNackWriteMessage
                                           {
                                               Ballot = payload.Ballot,
-                                              SenderUri = synodConfig.LocalNode.Uri.ToSocketAddress()
+                                              SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
                                           });
             }
             else
@@ -160,10 +160,10 @@ namespace kino.LeaseProvider
                 response = Message.Create(new LeaseAckWriteMessage
                                           {
                                               Ballot = payload.Ballot,
-                                              SenderUri = synodConfig.LocalNode.Uri.ToSocketAddress()
+                                              SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
                                           });
             }
-            intercomMessageHub.Send(response, payload.SenderIdentity);
+            intercomMessageHub.Send(response);
         }
 
         private void OnReadReceivedMessage(IMessage message)
@@ -182,7 +182,7 @@ namespace kino.LeaseProvider
                 response = Message.Create(new LeaseNackReadMessage
                                           {
                                               Ballot = payload.Ballot,
-                                              SenderUri = synodConfig.LocalNode.Uri.ToSocketAddress()
+                                              SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
                                           });
             }
             else
@@ -194,13 +194,13 @@ namespace kino.LeaseProvider
                 response = CreateLeaseAckReadMessage(payload);
             }
 
-            intercomMessageHub.Send(response, payload.SenderIdentity);
+            intercomMessageHub.Send(response);
         }
 
         public LeaseTxResult Read(Ballot ballot)
         {
-            var ackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseAckReadMessage>(), synodConfig);
-            var nackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseNackReadMessage>(), synodConfig);
+            var ackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseAckReadMessage>(), synodConfigProvider);
+            var nackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseNackReadMessage>(), synodConfigProvider);
 
             var awaitableAckFilter = new AwaitableMessageStreamFilter(ackFilter.Match, m => m.GetPayload<LeaseAckReadMessage>(), GetQuorum());
             var awaitableNackFilter = new AwaitableMessageStreamFilter(nackFilter.Match, m => m.GetPayload<LeaseNackReadMessage>(), GetQuorum());
@@ -210,7 +210,7 @@ namespace kino.LeaseProvider
                 using (nackReadStream.Subscribe(awaitableNackFilter))
                 {
                     var message = CreateReadMessage(ballot);
-                    intercomMessageHub.Broadcast(message);
+                    intercomMessageHub.Send(message);
 
                     var index = WaitHandle.WaitAny(new[] {awaitableAckFilter.Filtered, awaitableNackFilter.Filtered},
                                                    leaseConfig.NodeResponseTimeout);
@@ -245,8 +245,8 @@ namespace kino.LeaseProvider
 
         public LeaseTxResult Write(Ballot ballot, Lease lease)
         {
-            var ackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseAckWriteMessage>(), synodConfig);
-            var nackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseNackWriteMessage>(), synodConfig);
+            var ackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseAckWriteMessage>(), synodConfigProvider);
+            var nackFilter = new LeaderElectionMessageFilter(ballot, m => m.GetPayload<LeaseNackWriteMessage>(), synodConfigProvider);
 
             var awaitableAckFilter = new AwaitableMessageStreamFilter(ackFilter.Match, m => m.GetPayload<LeaseAckWriteMessage>(), GetQuorum());
             var awaitableNackFilter = new AwaitableMessageStreamFilter(nackFilter.Match, m => m.GetPayload<LeaseNackWriteMessage>(), GetQuorum());
@@ -255,7 +255,7 @@ namespace kino.LeaseProvider
             {
                 using (nackWriteStream.Subscribe(awaitableNackFilter))
                 {
-                    intercomMessageHub.Broadcast(CreateWriteMessage(ballot, lease));
+                    intercomMessageHub.Send(CreateWriteMessage(ballot, lease));
 
                     var index = WaitHandle.WaitAny(new[] {awaitableAckFilter.Filtered, awaitableNackFilter.Filtered},
                                                    leaseConfig.NodeResponseTimeout);
@@ -279,7 +279,7 @@ namespace kino.LeaseProvider
             => index == 1 || index == WaitHandle.WaitTimeout;
 
         private int GetQuorum()
-            => synodConfig.Synod.Count() / 2 + 1;
+            => synodConfigProvider.Synod.Count() / 2 + 1;
 
         public void Dispose()
             => listener.Dispose();
@@ -336,7 +336,7 @@ namespace kino.LeaseProvider
                                                         OwnerPayload = lastKnownLease.OwnerPayload
                                                     }
                                                   : null,
-                                      SenderUri = synodConfig.LocalNode.Uri.ToSocketAddress()
+                                      SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
                                   });
         }
     }

@@ -1,12 +1,12 @@
 ﻿using kino.Actors.Diagnostics;
 using kino.Connectivity;
 using kino.Consensus;
+using kino.Consensus.Configuration;
 using kino.Core.Diagnostics;
 using kino.Core.Diagnostics.Performance;
 using kino.LeaseProvider.Actors;
 using kino.LeaseProvider.Configuration;
 using kino.Messaging;
-using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
 
 namespace kino.LeaseProvider
 {
@@ -18,12 +18,11 @@ namespace kino.LeaseProvider
             var applicationConfig = resolver.Resolve<LeaseProviderServiceConfiguration>();
             var socketFactory = new SocketFactory(resolver.Resolve<SocketConfiguration>());
             var synodConfigProvider = new SynodConfigurationProvider(applicationConfig.LeaseProvider.Synod);
-            var synodConfig = new SynodConfiguration(synodConfigProvider);
             var instanceNameResolver = resolver.Resolve<IInstanceNameResolver>() ?? new InstanceNameResolver();
             var performanceCounterManager = new PerformanceCounterManager<KinoPerformanceCounters>(instanceNameResolver,
                                                                                                    logger);
             var intercomMessageHub = new IntercomMessageHub(socketFactory,
-                                                            synodConfig,
+                                                            synodConfigProvider,
                                                             performanceCounterManager,
                                                             logger);
             var ballotGenerator = new BallotGenerator(applicationConfig.LeaseProvider.Lease);
@@ -31,7 +30,7 @@ namespace kino.LeaseProvider
             messageHub = kino.GetMessageHub();
             leaseProvider = new LeaseProvider(intercomMessageHub,
                                               ballotGenerator,
-                                              synodConfig,
+                                              synodConfigProvider,
                                               applicationConfig.LeaseProvider.Lease,
                                               applicationConfig.LeaseProvider,
                                               messageHub,

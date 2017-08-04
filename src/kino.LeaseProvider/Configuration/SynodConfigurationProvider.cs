@@ -2,31 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using kino.Consensus.Configuration;
+using kino.Core;
 using kino.Core.Framework;
 
 namespace kino.LeaseProvider.Configuration
 {
-    public class SynodConfigurationProvider : ISynodConfigurationProvider
-    {
-        public SynodConfigurationProvider(SynodConfiguration config)
-        {
-            LocalNode = config.LocalNode.ParseAddress();
-            Synod = config.Members
-                          .Select(m => m.ParseAddress())
-                          .ToList();
-            HeartBeatInterval = config.HeartBeatInterval;
-            MissingHeartBeatsBeforeReconnect = config.MissingHeartBeatsBeforeReconnect;
-            IntercomEndpoint = new Uri(config.IntercomEndpoint);
-        }
+    //public class SynodConfigurationProvider : ISynodConfigurationProvider
+    //{
+    //    public SynodConfigurationProvider(SynodConfiguration config)
+    //    {
+    //        LocalNode = config.LocalNode.ParseAddress();
+    //        Synod = config.Members
+    //                      .Select(m => m.ParseAddress())
+    //                      .ToList();
+    //        HeartBeatInterval = config.HeartBeatInterval;
+    //        MissingHeartBeatsBeforeReconnect = config.MissingHeartBeatsBeforeReconnect;
+    //        IntercomEndpoint = new Uri(config.IntercomEndpoint);
+    //    }
 
-        public Uri LocalNode { get; }
+    //    public Uri LocalNode { get; }
 
-        public IEnumerable<Uri> Synod { get; }
+    //    public IEnumerable<DynamicUri> Synod { get; }
 
-        public TimeSpan HeartBeatInterval { get; }
+    //    public TimeSpan HeartBeatInterval { get; }
 
-        public int MissingHeartBeatsBeforeReconnect { get; }
+    //    public int MissingHeartBeatsBeforeReconnect { get; }
 
-        public Uri IntercomEndpoint { get; }
-    }
+    //    public Uri IntercomEndpoint { get; }
+    //}
 }

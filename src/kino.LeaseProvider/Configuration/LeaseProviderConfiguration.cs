@@ -1,4 +1,5 @@
 using System;
+using kino.Consensus.Configuration;
 
 namespace kino.LeaseProvider.Configuration
 {

@@ -5,7 +5,7 @@ using kino.Consensus.Configuration;
 using kino.LeaseProvider.Actors;
 using kino.LeaseProvider.Configuration;
 using kino.Messaging;
-using SynodConfiguration = kino.Consensus.Configuration.SynodConfiguration;
+using ILeaseProvider = kino.LeaseProvider.ILeaseProvider;
 
 namespace Autofac.kino.LeaseProvider
 {
@@ -36,10 +36,6 @@ namespace Autofac.kino.LeaseProvider
                    .As<ISynodConfigurationProvider>()
                    .SingleInstance();
 
-            builder.RegisterType<SynodConfiguration>()
-                   .As<ISynodConfiguration>()
-                   .SingleInstance();
-
             builder.RegisterType<IntercomMessageHub>()
                    .As<IIntercomMessageHub>()
                    .SingleInstance();
@@ -49,7 +45,7 @@ namespace Autofac.kino.LeaseProvider
                    .SingleInstance();
 
             builder.RegisterType<global::kino.LeaseProvider.LeaseProvider>()
-                   .As<global::kino.LeaseProvider.ILeaseProvider>()
+                   .As<ILeaseProvider>()
                    .SingleInstance();
 
             builder.RegisterType<ProtobufMessageSerializer>()

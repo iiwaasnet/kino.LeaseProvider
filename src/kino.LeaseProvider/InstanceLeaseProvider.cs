@@ -24,11 +24,11 @@ namespace kino.LeaseProvider
                                      IRoundBasedRegister register,
                                      IBallotGenerator ballotGenerator,
                                      InstanceLeaseProviderConfiguration leaseConfig,
-                                     ISynodConfiguration synodConfig,
+                                     ISynodConfigurationProvider synodConfigProvider,
                                      ILogger logger)
         {
             instanceStartDateTime = DateTime.UtcNow;
-            localNode = synodConfig.LocalNode;
+            localNode = synodConfigProvider.LocalNode;
             this.instance = instance;
             this.register = register;
             this.ballotGenerator = ballotGenerator;

@@ -11,7 +11,7 @@ namespace kino.LeaseProvider
     {
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
-        private readonly ISynodConfiguration synodConfig;
+        private readonly ISynodConfigurationProvider synodConfigProvider;
         private readonly InstanceLeaseProviderConfiguration leaseConfig;
         private readonly ILogger logger;
         private InstanceLeaseProvider instanceLeaseProvider;
@@ -19,13 +19,13 @@ namespace kino.LeaseProvider
         public DelayedInstanceWrap(Instance instance,
                                    IIntercomMessageHub intercomMessageHub,
                                    IBallotGenerator ballotGenerator,
-                                   ISynodConfiguration synodConfig,
+                                   ISynodConfigurationProvider synodConfigProvider,
                                    InstanceLeaseProviderConfiguration leaseConfig,
                                    ILogger logger)
         {
             this.intercomMessageHub = intercomMessageHub;
             this.ballotGenerator = ballotGenerator;
-            this.synodConfig = synodConfig;
+            this.synodConfigProvider = synodConfigProvider;
             this.leaseConfig = leaseConfig;
             this.logger = logger;
             Task.Delay(leaseConfig.ClockDrift).ContinueWith(_ => CreateInstanceLeaseProvider(instance));
@@ -37,12 +37,12 @@ namespace kino.LeaseProvider
                                                 new InstanceRoundBasedRegister(instance,
                                                                                intercomMessageHub,
                                                                                ballotGenerator,
-                                                                               synodConfig,
+                                                                               synodConfigProvider,
                                                                                leaseConfig,
                                                                                logger),
                                                 ballotGenerator,
                                                 leaseConfig,
-                                                synodConfig,
+                                                synodConfigProvider,
                                                 logger);
             Interlocked.Exchange(ref instanceLeaseProvider, tmp);
         }

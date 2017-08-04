@@ -19,7 +19,7 @@ namespace kino.LeaseProvider
     {
         private readonly IIntercomMessageHub intercomMessageHub;
         private readonly IBallotGenerator ballotGenerator;
-        private readonly ISynodConfiguration synodConfig;
+        private readonly ISynodConfigurationProvider synodConfigProvider;
         private readonly InstanceLeaseProviderConfiguration leaseConfiguration;
         private readonly byte[] clusterName;
         private readonly IMessageHub messageHub;
@@ -30,7 +30,7 @@ namespace kino.LeaseProvider
 
         public LeaseProvider(IIntercomMessageHub intercomMessageHub,
                              IBallotGenerator ballotGenerator,
-                             ISynodConfiguration synodConfig,
+                             ISynodConfigurationProvider synodConfigProvider,
                              InstanceLeaseProviderConfiguration leaseConfiguration,
                              LeaseProviderConfiguration leaseProviderConfiguration,
                              IMessageHub messageHub,
@@ -40,7 +40,7 @@ namespace kino.LeaseProvider
 
             this.intercomMessageHub = intercomMessageHub;
             this.ballotGenerator = ballotGenerator;
-            this.synodConfig = synodConfig;
+            this.synodConfigProvider = synodConfigProvider;
             this.leaseConfiguration = leaseConfiguration;
             this.messageHub = messageHub;
             this.logger = logger;
@@ -166,7 +166,7 @@ namespace kino.LeaseProvider
             => new DelayedInstanceWrap(instance,
                                        intercomMessageHub,
                                        ballotGenerator,
-                                       synodConfig,
+                                       synodConfigProvider,
                                        leaseConfiguration,
                                        logger);
 

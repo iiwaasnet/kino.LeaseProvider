@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace kino.LeaseProvider.Configuration
 {
-    public class SynodConfiguration
-    {
-        public string LocalNode { get; set; }
+    //public class SynodConfiguration
+    //{
+    //    public string LocalNode { get; set; }
 
-        public IEnumerable<string> Members { get; set; }
+    //    public IEnumerable<string> Members { get; set; }
 
-        public TimeSpan HeartBeatInterval { get; set; }
+    //    public TimeSpan HeartBeatInterval { get; set; }
 
-        public int MissingHeartBeatsBeforeReconnect { get; set; }
+    //    public int MissingHeartBeatsBeforeReconnect { get; set; }
 
-        public string IntercomEndpoint { get; set; }
-    }
+    //    public string IntercomEndpoint { get; set; }
+    //}
 }
