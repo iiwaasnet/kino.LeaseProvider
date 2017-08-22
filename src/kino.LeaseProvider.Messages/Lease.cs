@@ -1,5 +1,4 @@
-﻿using System;
-using ProtoBuf;
+﻿using ProtoBuf;
 
 namespace kino.LeaseProvider.Messages
 {
@@ -13,6 +12,6 @@ namespace kino.LeaseProvider.Messages
         public Node Owner { get; set; }
 
         [ProtoMember(3)]
-        public DateTime ExpiresAt { get; set; }
+        public long ExpiresAt { get; set; }
     }
 }

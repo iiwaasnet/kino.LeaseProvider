@@ -78,11 +78,11 @@ namespace kino.LeaseProvider.Client
                     {
                         Console.WriteLine($"{DateTime.UtcNow} " +
                                           $"Acquired: {response.LeaseAcquired} " +
-                                          $"Instance: {response.Lease?.Instance} " +
-                                          $"Owner: {response.Lease?.Owner.Uri} " +
-                                          $"OwnerIdentity: {response.Lease?.Owner.Identity.GetAnyString()} " +
+                                          $"Instance: {response.Lease.Instance} " +
+                                          $"Owner: {response.Lease.Owner.Uri} " +
+                                          $"OwnerIdentity: {response.Lease.Owner.Identity.GetAnyString()} " +
                                           $"RequestorIdentity: {ownerIdentity.GetString()} " +
-                                          $"ExpiresAt: {response.Lease?.ExpiresAt}");
+                                          $"ExpiresAt: {new DateTime(response.Lease.ExpiresAt, DateTimeKind.Utc)}");
                         leaseTimeSpan.DivideBy(2).Sleep();
                     }
                     else

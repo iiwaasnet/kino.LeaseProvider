@@ -64,7 +64,7 @@ namespace kino.LeaseProvider.Actors
                                                             ? new Lease
                                                               {
                                                                   Instance = payload.Instance,
-                                                                  ExpiresAt = lease.ExpiresAt,
+                                                                  ExpiresAt = lease.ExpiresAt.Ticks,
                                                                   Owner = leaseOwner
                                                               }
                                                             : null,

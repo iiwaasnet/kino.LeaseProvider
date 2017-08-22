@@ -20,6 +20,7 @@ packages/
 !packages/repositories.config
 !packages/*/build/
 
+*.ide
 
 # Ignore node modules
 node_modules/
