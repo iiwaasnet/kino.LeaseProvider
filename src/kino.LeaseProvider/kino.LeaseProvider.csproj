@@ -113,6 +113,7 @@
     <Compile Include="Actors\InstanceDiscoveryActor.cs" />
     <Compile Include="Configuration\InstanceLeaseProviderConfiguration.cs" />
     <Compile Include="GetLeaseRequest.cs" />
+    <Compile Include="IInstanceRoundBasedRegister.cs" />
     <Compile Include="InstanceNotRegisteredException.cs" />
     <Compile Include="InstanceStatus.cs" />
     <Compile Include="LeaseProviderService.Builder.cs" />

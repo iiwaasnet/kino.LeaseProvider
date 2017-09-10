@@ -7,13 +7,14 @@ using kino.Consensus.Configuration;
 using kino.Consensus.Messages;
 using kino.Core.Diagnostics;
 using kino.Core.Framework;
+using kino.LeaseProvider.Configuration;
 using kino.Messaging;
 using Ballot = kino.Consensus.Ballot;
 using Lease = kino.Consensus.Lease;
 
 namespace kino.LeaseProvider
 {
-    public partial class InstanceRoundBasedRegister : IRoundBasedRegister
+    public partial class InstanceRoundBasedRegister : IInstanceRoundBasedRegister
     {
         private readonly IIntercomMessageHub intercomMessageHub;
         private Ballot readBallot;
@@ -21,7 +22,7 @@ namespace kino.LeaseProvider
         private Lease lease;
         private readonly Listener listener;
         private readonly ISynodConfigurationProvider synodConfigProvider;
-        private readonly LeaseConfiguration leaseConfig;
+        private readonly InstanceLeaseProviderConfiguration leaseConfig;
         private readonly Instance instance;
         private readonly ILogger logger;
 
@@ -29,12 +30,13 @@ namespace kino.LeaseProvider
         private readonly IObservable<IMessage> nackReadStream;
         private readonly IObservable<IMessage> ackWriteStream;
         private readonly IObservable<IMessage> nackWriteStream;
+        private long lastIntercomeMessageTimestamp;
 
         public InstanceRoundBasedRegister(Instance instance,
                                           IIntercomMessageHub intercomMessageHub,
                                           IBallotGenerator ballotGenerator,
                                           ISynodConfigurationProvider synodConfigProvider,
-                                          LeaseConfiguration leaseConfig,
+                                          InstanceLeaseProviderConfiguration leaseConfig,
                                           ILogger logger)
         {
             this.instance = instance;
@@ -44,12 +46,13 @@ namespace kino.LeaseProvider
             this.intercomMessageHub = intercomMessageHub;
             readBallot = ballotGenerator.Null();
             writeBallot = ballotGenerator.Null();
+            lastIntercomeMessageTimestamp = DateTime.UtcNow.Ticks;
 
             listener = intercomMessageHub.Subscribe();
 
             listener.Where(IsLeaseRead)
-                    .Subscribe(OnReadReceivedMessage);
-            listener.Where(IsWriteLeaseMessage)
+                    .Subscribe(OnReadReceived);
+            listener.Where(IsWriteLease)
                     .Subscribe(OnWriteReceived);
 
             ackReadStream = listener.Where(IsLeaseAckReadMessage);
@@ -59,6 +62,14 @@ namespace kino.LeaseProvider
 
             logger.Info($"{instance.Identity.GetAnyString()}-InstanceRoundBasedRegister created");
         }
+
+        public bool IsInstanceStale()
+            => DateTime.UtcNow.Ticks - Interlocked.Read(ref lastIntercomeMessageTimestamp)
+               >
+               leaseConfig.LeaseProviderIsStaleAfter.Ticks;
+
+        public bool IsConsensusReached()
+            => lease != null;
 
         private bool IsLeaseNackWriteMessage(IMessage message)
         {
@@ -108,7 +119,7 @@ namespace kino.LeaseProvider
             return false;
         }
 
-        private bool IsWriteLeaseMessage(IMessage message)
+        private bool IsWriteLease(IMessage message)
         {
             if (message.Equals(ConsensusMessages.LeaseWrite))
             {
@@ -134,6 +145,8 @@ namespace kino.LeaseProvider
 
         private void OnWriteReceived(IMessage message)
         {
+            Interlocked.Exchange(ref lastIntercomeMessageTimestamp, DateTime.UtcNow.Ticks);
+
             var payload = message.GetPayload<LeaseWriteMessage>();
 
             var ballot = new Ballot(new DateTime(payload.Ballot.Timestamp, DateTimeKind.Utc),
@@ -166,8 +179,10 @@ namespace kino.LeaseProvider
             intercomMessageHub.Send(response);
         }
 
-        private void OnReadReceivedMessage(IMessage message)
+        private void OnReadReceived(IMessage message)
         {
+            Interlocked.Exchange(ref lastIntercomeMessageTimestamp, DateTime.UtcNow.Ticks);
+
             var payload = message.GetPayload<LeaseReadMessage>();
 
             var ballot = new Ballot(new DateTime(payload.Ballot.Timestamp, DateTimeKind.Utc),

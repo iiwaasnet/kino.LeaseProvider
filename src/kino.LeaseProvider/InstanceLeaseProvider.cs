@@ -11,23 +11,21 @@ namespace kino.LeaseProvider
     public partial class InstanceLeaseProvider : IInstanceLeaseProvider
     {
         private readonly Instance instance;
-        private readonly IRoundBasedRegister register;
+        private readonly IInstanceRoundBasedRegister register;
         private readonly IBallotGenerator ballotGenerator;
         private readonly InstanceLeaseProviderConfiguration leaseConfig;
         private readonly Node localNode;
         private readonly ILogger logger;
         private volatile Lease lastKnownLease;
         private readonly TimeSpan minLeaseValidityPeriod;
-        private readonly DateTime instanceStartDateTime;
 
         public InstanceLeaseProvider(Instance instance,
-                                     IRoundBasedRegister register,
+                                     IInstanceRoundBasedRegister register,
                                      IBallotGenerator ballotGenerator,
                                      InstanceLeaseProviderConfiguration leaseConfig,
                                      ISynodConfigurationProvider synodConfigProvider,
                                      ILogger logger)
         {
-            instanceStartDateTime = DateTime.UtcNow;
             localNode = synodConfigProvider.LocalNode;
             this.instance = instance;
             this.register = register;
@@ -50,12 +48,10 @@ namespace kino.LeaseProvider
         }
 
         public bool IsConsensusReached()
-            => lastKnownLease != null;
+            => register.IsConsensusReached();
 
         public bool IsInstanceStale()
-            => DateTime.UtcNow - (lastKnownLease?.ExpiresAt ?? instanceStartDateTime)
-               >
-               leaseConfig.LeaseProviderIsStaleAfter;
+            => register.IsInstanceStale();
 
         public void Dispose()
             => register.Dispose();
