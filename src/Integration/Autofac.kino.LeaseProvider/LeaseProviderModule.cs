@@ -32,6 +32,10 @@ namespace Autofac.kino.LeaseProvider
                    .AsSelf()
                    .SingleInstance();
 
+            builder.Register(c => c.Resolve<LeaseProviderServiceConfiguration>().Kino.Socket)
+                   .AsSelf()
+                   .SingleInstance();
+
             builder.RegisterType<SynodConfigurationProvider>()
                    .As<ISynodConfigurationProvider>()
                    .SingleInstance();

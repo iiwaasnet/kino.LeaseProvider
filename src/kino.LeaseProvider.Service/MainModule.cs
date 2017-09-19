@@ -27,6 +27,10 @@ namespace kino.LeaseProvider.Service
                    .As<KinoConfiguration>()
                    .SingleInstance();
 
+            builder.Register(c => c.Resolve<LeaseProviderServiceConfiguration>().Kino.Socket)
+                   .AsSelf()
+                   .SingleInstance();
+
             builder.Register(c => new Logger("default"))
                    .As<ILogger>()
                    .SingleInstance();
