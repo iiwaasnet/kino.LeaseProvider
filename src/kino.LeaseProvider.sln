@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Messages", "kino.LeaseProvider.Messages\kino.LeaseProvider.Messages.csproj", "{319B68BA-CF46-4512-96FC-4F57C4AEF7B8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider", "kino.LeaseProvider\kino.LeaseProvider.csproj", "{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Client", "kino.LeaseProvider.Client\kino.LeaseProvider.Client.csproj", "{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Service", "kino.LeaseProvider.Service\kino.LeaseProvider.Service.csproj", "{7FE75B6E-B38E-4178-AF88-8E16E41A88C5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{DA01C4FD-3BED-4525-8E72-58E7A4C14FA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.kino.LeaseProvider", "Integration\Autofac.kino.LeaseProvider\Autofac.kino.LeaseProvider.csproj", "{E838F054-F4C5-4817-9B9F-104C9E74024F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.kino.LeaseProvider", "Integration\Autofac.kino.LeaseProvider\Autofac.kino.LeaseProvider.csproj", "{7FA50758-55BA-48C3-8A8F-5012FF8FB780}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider", "kino.LeaseProvider\kino.LeaseProvider.csproj", "{FAB13584-97E4-4341-A678-D220062D1F5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Messages", "kino.LeaseProvider.Messages\kino.LeaseProvider.Messages.csproj", "{E51E9D0F-8FCC-44AD-A723-2C5F664CBCED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Client", "kino.LeaseProvider.Client\kino.LeaseProvider.Client.csproj", "{BBDDD93B-460C-455A-969E-11EB8286AC5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kino.LeaseProvider.Service", "kino.LeaseProvider.Service\kino.LeaseProvider.Service.csproj", "{6BF36EF3-0B60-4537-B636-E069709C888E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,31 +21,34 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{319B68BA-CF46-4512-96FC-4F57C4AEF7B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{319B68BA-CF46-4512-96FC-4F57C4AEF7B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{319B68BA-CF46-4512-96FC-4F57C4AEF7B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{319B68BA-CF46-4512-96FC-4F57C4AEF7B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42CFB5F3-33BD-411C-9BE9-D3F0FC6666B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF4D4C05-1C2C-469A-8A76-DA2BE40C9E53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FE75B6E-B38E-4178-AF88-8E16E41A88C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FE75B6E-B38E-4178-AF88-8E16E41A88C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FE75B6E-B38E-4178-AF88-8E16E41A88C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FE75B6E-B38E-4178-AF88-8E16E41A88C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E838F054-F4C5-4817-9B9F-104C9E74024F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E838F054-F4C5-4817-9B9F-104C9E74024F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E838F054-F4C5-4817-9B9F-104C9E74024F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E838F054-F4C5-4817-9B9F-104C9E74024F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FA50758-55BA-48C3-8A8F-5012FF8FB780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FA50758-55BA-48C3-8A8F-5012FF8FB780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FA50758-55BA-48C3-8A8F-5012FF8FB780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FA50758-55BA-48C3-8A8F-5012FF8FB780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAB13584-97E4-4341-A678-D220062D1F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAB13584-97E4-4341-A678-D220062D1F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAB13584-97E4-4341-A678-D220062D1F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAB13584-97E4-4341-A678-D220062D1F5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E51E9D0F-8FCC-44AD-A723-2C5F664CBCED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E51E9D0F-8FCC-44AD-A723-2C5F664CBCED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E51E9D0F-8FCC-44AD-A723-2C5F664CBCED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E51E9D0F-8FCC-44AD-A723-2C5F664CBCED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBDDD93B-460C-455A-969E-11EB8286AC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBDDD93B-460C-455A-969E-11EB8286AC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBDDD93B-460C-455A-969E-11EB8286AC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBDDD93B-460C-455A-969E-11EB8286AC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF36EF3-0B60-4537-B636-E069709C888E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF36EF3-0B60-4537-B636-E069709C888E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF36EF3-0B60-4537-B636-E069709C888E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF36EF3-0B60-4537-B636-E069709C888E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E838F054-F4C5-4817-9B9F-104C9E74024F} = {DA01C4FD-3BED-4525-8E72-58E7A4C14FA3}
+		{7FA50758-55BA-48C3-8A8F-5012FF8FB780} = {DA01C4FD-3BED-4525-8E72-58E7A4C14FA3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37369402-E244-4A3A-B35F-8043F2A1856A}
 	EndGlobalSection
 EndGlobal

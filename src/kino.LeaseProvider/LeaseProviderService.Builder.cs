@@ -18,9 +18,12 @@ namespace kino.LeaseProvider
             var applicationConfig = resolver.Resolve<LeaseProviderServiceConfiguration>();
             var socketFactory = new SocketFactory(resolver.Resolve<SocketConfiguration>());
             var synodConfigProvider = new SynodConfigurationProvider(applicationConfig.LeaseProvider.Synod);
+#if NET47
             var instanceNameResolver = resolver.Resolve<IInstanceNameResolver>() ?? new InstanceNameResolver();
-            var performanceCounterManager = new PerformanceCounterManager<KinoPerformanceCounters>(instanceNameResolver,
-                                                                                                   logger);
+            var performanceCounterManager = new PerformanceCounterManager<KinoPerformanceCounters>(instanceNameResolver, logger);
+#else
+            var performanceCounterManager = default(IPerformanceCounterManager<KinoPerformanceCounters>);
+#endif
             var intercomMessageHub = new IntercomMessageHub(socketFactory,
                                                             synodConfigProvider,
                                                             performanceCounterManager,
