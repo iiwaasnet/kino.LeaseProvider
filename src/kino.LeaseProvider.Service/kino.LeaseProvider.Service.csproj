@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.1" />
-    <PackageReference Include="Autofac.kino" Version="0.0.1.43" />
+    <PackageReference Include="Autofac.kino" Version="0.0.2" />
     <PackageReference Include="NLog" Version="4.4.12" />
     <PackageReference Include="TypedConfigProvider" Version="2.0.0" />
     <PackageReference Include="WindowsService.Host" Version="0.0.0.7" />
