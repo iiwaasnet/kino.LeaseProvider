@@ -68,7 +68,7 @@ namespace kino.LeaseProvider.Client
                                                              });
                 request.TraceOptions = MessageTraceOptions.None;
                 var callbackPoint = new CallbackPoint(MessageIdentifier.Create<LeaseResponseMessage>(partition));
-                var promise = messageHub.EnqueueRequest(request, callbackPoint);
+                var promise = messageHub.Send(request, callbackPoint);
                 var waitTimeout = TimeSpan.FromMilliseconds(500);
                 if (promise.GetResponse().Wait(waitTimeout))
                 {
@@ -120,7 +120,7 @@ namespace kino.LeaseProvider.Client
                     //message.TraceOptions = MessageTraceOptions.Routing;
                     var callback = new CallbackPoint(MessageIdentifier.Create<CreateLeaseProviderInstanceResponseMessage>(partition));
 
-                    using (var promise = messageHub.EnqueueRequest(message, callback))
+                    using (var promise = messageHub.Send(message, callback))
                     {
                         results.Add(promise.GetResponse().Result.GetPayload<CreateLeaseProviderInstanceResponseMessage>());
                     }

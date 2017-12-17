@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="kino" Version="0.0.2" />
-      <PackageReference Include="kino.Consensus" Version="0.0.2" />
+    <PackageReference Include="kino" Version="0.0.3" />
+      <PackageReference Include="kino.Consensus" Version="0.0.3" />
   </ItemGroup>
     
   <ItemGroup>

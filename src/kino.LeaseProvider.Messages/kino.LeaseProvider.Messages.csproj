@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="kino" Version="0.0.2" />
-    <PackageReference Include="protobuf-net" Version="2.3.2" />
+    <PackageReference Include="kino" Version="0.0.3" />
+    <PackageReference Include="protobuf-net" Version="2.3.3" />
   </ItemGroup>
 
 </Project>
