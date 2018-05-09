@@ -5,6 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
+*.sqlite
+VSWorkspaceState.json
 
 # Build results
 
@@ -14,11 +16,12 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
-
+.vs/
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 packages/
 !packages/repositories.config
 !packages/*/build/
+*.nupkg
 
 *.ide
 
