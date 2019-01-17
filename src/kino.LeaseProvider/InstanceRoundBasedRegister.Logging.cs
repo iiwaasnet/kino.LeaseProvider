@@ -9,25 +9,25 @@ namespace kino.LeaseProvider
         {
             if (writeBallot >= ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "NACK_READ ==WB== " +
-                             $"{writeBallot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{writeBallot.Timestamp:HH:mm:ss fff}-" +
                              $"{writeBallot.MessageNumber}-" +
                              $"{writeBallot.Identity.GetAnyString()} " +
                              ">= " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
             if (readBallot >= ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "NACK_READ ==RB== " +
-                             $"{readBallot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{readBallot.Timestamp:HH:mm:ss fff}-" +
                              $"{readBallot.MessageNumber}-" +
                              $"{readBallot.Identity.GetAnyString()} " +
                              ">= " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
@@ -37,25 +37,25 @@ namespace kino.LeaseProvider
         {
             if (writeBallot < ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "ACK_READ ==WB== " +
-                             $"{writeBallot.Timestamp.ToString("HH: mm:ss fff")}-" +
+                             $"{writeBallot.Timestamp:HH: mm:ss fff}-" +
                              $"{writeBallot.MessageNumber}-" +
                              $"{writeBallot.Identity.GetAnyString()} " +
                              "< " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
             if (readBallot < ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "ACK_READ ==RB== " +
-                             $"{readBallot.Timestamp.ToString("HH: mm:ss fff")}-" +
+                             $"{readBallot.Timestamp:HH: mm:ss fff}-" +
                              $"{readBallot.MessageNumber}-" +
                              $"{readBallot.Identity.GetAnyString()} " +
                              "< " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
@@ -65,25 +65,25 @@ namespace kino.LeaseProvider
         {
             if (writeBallot > ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "NACK_WRITE ==WB== " +
-                             $"{writeBallot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{writeBallot.Timestamp:HH:mm:ss fff}-" +
                              $"{writeBallot.MessageNumber}-" +
                              $"{writeBallot.Identity.GetAnyString()} " +
                              "> " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
             if (readBallot > ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "NACK_WRITE ==RB== " +
-                             $"{readBallot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{readBallot.Timestamp:HH:mm:ss fff}-" +
                              $"{readBallot.MessageNumber}-" +
                              $"{readBallot.Identity.GetAnyString()} " +
                              "> " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
@@ -93,25 +93,25 @@ namespace kino.LeaseProvider
         {
             if (writeBallot <= ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "ACK_WRITE ==WB== " +
-                             $"{writeBallot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{writeBallot.Timestamp:HH:mm:ss fff}-" +
                              $"{writeBallot.MessageNumber}-" +
                              $"{writeBallot.Identity.GetAnyString()} " +
                              "<= " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }
             if (readBallot <= ballot)
             {
-                logger.Debug($"process {synodConfigProvider.LocalNode.Uri.AbsoluteUri} " +
+                logger.Debug($"process {synodConfigProvider.LocalNode.Uri} " +
                              "ACK_WRITE ==RB== " +
-                             $"{readBallot.Timestamp.ToString("HH: mm:ss fff")}-" +
+                             $"{readBallot.Timestamp:HH: mm:ss fff}-" +
                              $"{readBallot.MessageNumber}-" +
                              $"{readBallot.Identity.GetAnyString()} " +
                              "<= " +
-                             $"{ballot.Timestamp.ToString("HH:mm:ss fff")}-" +
+                             $"{ballot.Timestamp:HH:mm:ss fff}-" +
                              $"{ballot.MessageNumber}-" +
                              $"{ballot.Identity.GetAnyString()}");
             }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
       <Copyright>Copyright © 2015 Sergey Ivasenko</Copyright>
       <PackageLicenseUrl>https://github.com/iiwaasnet/kino.LeaseProvider/blob/master/LICENSE</PackageLicenseUrl>
       <PackageProjectUrl>https://github.com/iiwaasnet/kino.LeaseProvider</PackageProjectUrl>
@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="kino" Version="0.0.4.1" />
-      <PackageReference Include="kino.Consensus" Version="0.0.4.1" />
+    <PackageReference Include="kino" Version="0.0.5.4" />
+      <PackageReference Include="kino.Consensus" Version="0.0.5.4" />
   </ItemGroup>
     
   <ItemGroup>

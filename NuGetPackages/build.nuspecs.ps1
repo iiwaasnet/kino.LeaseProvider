@@ -109,11 +109,37 @@ function Get-NuGetTargetPlatform([string]$fw)
     {
         return '.NETFramework4.7'
     }
+    if ($fw -eq 'netcoreapp2.1')
+    {
+        return '.NETCoreApp2.1'
+    }
 	
 	# add other FWs, i.e. core, net461, etc
 
     throw 'Framework is not supported: [' + $fw + ']'
 }
+
+
+function Get-BuildDirForTargetPlatform([string]$fw)
+{
+	if ($fw -eq 'netstandard2.0')
+    {
+        return 'netstandard2.0'
+    }
+    if ($fw -eq 'net4.7')
+    {
+        return 'net47'
+    }
+    if ($fw -eq 'netcoreapp2.1')
+    {
+        return 'netcoreapp2.1'
+    }
+	
+	# add other FWs, i.e. core, net461, etc
+
+    throw 'Framework is not supported: [' + $fw + ']'
+}
+
 
 function Copy-ProjectNuGetAttributes([xml]$projectXml, [System.Xml.XmlNode]$meta, [System.Xml.XmlDocument]$doc)
 {
@@ -225,8 +251,17 @@ function Add-FileDependencies([xml]$nuSpec, [xml]$projectXml, $projectRefs, $fra
             {				
                 # Configuration, i.e. Debug or Release can come with params to script
                 $fileName = [io.path]::GetFileNameWithoutExtension($ref.Name)
+				# add DLLs
                 $source = 'bin\Release\' + $fw + '\' + $fileName + '.dll'
                 $target = 'lib\' + $fw + '\' + $fileName + '.dll'
+                $file = $nuSpec.CreateElement('file', (Get-XmlNs))
+                $file.SetAttribute('src', $source)
+                $file.SetAttribute('target', $target)
+
+                $files.AppendChild($file)
+				# add PDB files
+				$source = 'bin\Release\' + $fw + '\' + $fileName + '.pdb'
+                $target = 'lib\' + $fw + '\' + $fileName + '.pdb'
                 $file = $nuSpec.CreateElement('file', (Get-XmlNs))
                 $file.SetAttribute('src', $source)
                 $file.SetAttribute('target', $target)

@@ -12,9 +12,7 @@ namespace kino.LeaseProvider
         private IMessageHub messageHub;
 
         public LeaseProviderService(IDependencyResolver resolver)
-        {
-            this.resolver = resolver;
-        }
+            => this.resolver = resolver;
 
         public LeaseProviderService()
             : this(null)

@@ -1,4 +1,5 @@
 ﻿using kino.Actors.Diagnostics;
+using kino.Configuration;
 using kino.Connectivity;
 using kino.Consensus;
 using kino.Consensus.Configuration;
@@ -12,11 +13,20 @@ namespace kino.LeaseProvider
 {
     public partial class LeaseProviderService
     {
+
         public void Build()
         {
             var logger = resolver.Resolve<ILogger>();
             var applicationConfig = resolver.Resolve<LeaseProviderServiceConfiguration>();
-            var socketFactory = new SocketFactory(resolver.Resolve<SocketConfiguration>());
+            var configurationProvider = new ConfigurationProvider(applicationConfig.Kino);
+            var socketConfiguration = configurationProvider.GetSocketConfiguration();
+            var messageWireFormatter =
+#if NET47
+                resolver.Resolve<IMessageWireFormatter>() ?? new MessageWireFormatterV5();
+#else
+            resolver.Resolve<IMessageWireFormatter>() ?? new MessageWireFormatterV6_1();
+#endif
+            var socketFactory = new SocketFactory(messageWireFormatter, socketConfiguration);
             var synodConfigProvider = new SynodConfigurationProvider(applicationConfig.LeaseProvider.Synod);
 #if NET47
             var instanceNameResolver = resolver.Resolve<IInstanceNameResolver>() ?? new InstanceNameResolver();

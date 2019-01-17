@@ -9,25 +9,25 @@ namespace kino.LeaseProvider
 
         private void LogAwake()
         {
-            logger.Debug($"SLEEP === process {localNode.Uri.AbsoluteUri} " +
+            logger.Debug($"SLEEP === process {localNode.Uri} " +
                          $"Waked up at {DateTime.UtcNow.ToString(format)}");
         }
 
         private void LogStartSleep()
         {
-            logger.Debug($"SLEEP === process {localNode.Uri.AbsoluteUri} " +
+            logger.Debug($"SLEEP === process {localNode.Uri} " +
                          $"Sleep from {DateTime.UtcNow.ToString(format)}");
         }
 
-        private void LogLeaseProlonged(byte[] requestorIdentity, Lease lastReadLease)
+        private void LogLeaseProlonged(byte[] requesterIdentity, Lease lastReadLease)
         {
             if (lastReadLease != null)
             {
-                if (IsLeaseOwner(requestorIdentity, lastReadLease))
+                if (IsLeaseOwner(requesterIdentity, lastReadLease))
                 {
                     logger.Debug($"[{DateTime.UtcNow.ToString(format)}] " +
                                  "PROLONG === process " +
-                                 $"{localNode.Uri.AbsoluteUri} " +
+                                 $"{localNode.Uri} " +
                                  "wants to prolong it's lease " +
                                  $"{lastReadLease.ExpiresAt.ToString(format)}");
                 }
@@ -35,7 +35,7 @@ namespace kino.LeaseProvider
                 {
                     logger.Debug($"[{DateTime.UtcNow.ToString(format)}] " +
                                  "RENEW === process " +
-                                 $"{localNode.Uri.AbsoluteUri} " +
+                                 $"{localNode.Uri} " +
                                  "wants to renew lease " +
                                  $"{lastReadLease.ExpiresAt.ToString(format)}");
                 }

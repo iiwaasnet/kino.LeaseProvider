@@ -30,7 +30,7 @@ namespace kino.LeaseProvider
         private readonly IObservable<IMessage> nackReadStream;
         private readonly IObservable<IMessage> ackWriteStream;
         private readonly IObservable<IMessage> nackWriteStream;
-        private long lastIntercomeMessageTimestamp;
+        private long lastIntercomMessageTimestamp;
 
         public InstanceRoundBasedRegister(Instance instance,
                                           IIntercomMessageHub intercomMessageHub,
@@ -46,7 +46,7 @@ namespace kino.LeaseProvider
             this.intercomMessageHub = intercomMessageHub;
             readBallot = ballotGenerator.Null();
             writeBallot = ballotGenerator.Null();
-            lastIntercomeMessageTimestamp = DateTime.UtcNow.Ticks;
+            lastIntercomMessageTimestamp = DateTime.UtcNow.Ticks;
 
             listener = intercomMessageHub.Subscribe();
 
@@ -64,7 +64,7 @@ namespace kino.LeaseProvider
         }
 
         public bool IsInstanceStale()
-            => DateTime.UtcNow.Ticks - Interlocked.Read(ref lastIntercomeMessageTimestamp)
+            => DateTime.UtcNow.Ticks - Interlocked.Read(ref lastIntercomMessageTimestamp)
                >
                leaseConfig.LeaseProviderIsStaleAfter.Ticks;
 
@@ -145,7 +145,7 @@ namespace kino.LeaseProvider
 
         private void OnWriteReceived(IMessage message)
         {
-            Interlocked.Exchange(ref lastIntercomeMessageTimestamp, DateTime.UtcNow.Ticks);
+            Interlocked.Exchange(ref lastIntercomMessageTimestamp, DateTime.UtcNow.Ticks);
 
             var payload = message.GetPayload<LeaseWriteMessage>();
 
@@ -160,7 +160,7 @@ namespace kino.LeaseProvider
                 response = Message.Create(new LeaseNackWriteMessage
                                           {
                                               Ballot = payload.Ballot,
-                                              SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
+                                              SenderUri = synodConfigProvider.LocalNode.Uri
                                           });
             }
             else
@@ -173,15 +173,16 @@ namespace kino.LeaseProvider
                 response = Message.Create(new LeaseAckWriteMessage
                                           {
                                               Ballot = payload.Ballot,
-                                              SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
+                                              SenderUri = synodConfigProvider.LocalNode.Uri
                                           });
             }
+
             intercomMessageHub.Send(response);
         }
 
         private void OnReadReceived(IMessage message)
         {
-            Interlocked.Exchange(ref lastIntercomeMessageTimestamp, DateTime.UtcNow.Ticks);
+            Interlocked.Exchange(ref lastIntercomMessageTimestamp, DateTime.UtcNow.Ticks);
 
             var payload = message.GetPayload<LeaseReadMessage>();
 
@@ -197,7 +198,7 @@ namespace kino.LeaseProvider
                 response = Message.Create(new LeaseNackReadMessage
                                           {
                                               Ballot = payload.Ballot,
-                                              SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
+                                              SenderUri = synodConfigProvider.LocalNode.Uri
                                           });
             }
             else
@@ -236,10 +237,10 @@ namespace kino.LeaseProvider
                     }
 
                     var lease = awaitableAckFilter
-                        .MessageStream
-                        .Select(m => m.GetPayload<LeaseAckReadMessage>())
-                        .Max(p => CreateLastWrittenLease(p))
-                        .Lease;
+                                .MessageStream
+                                .Select(m => m.GetPayload<LeaseAckReadMessage>())
+                                .Max(p => CreateLastWrittenLease(p))
+                                .Lease;
 
                     return new LeaseTxResult
                            {
@@ -351,7 +352,7 @@ namespace kino.LeaseProvider
                                                         OwnerPayload = lastKnownLease.OwnerPayload
                                                     }
                                                   : null,
-                                      SenderUri = synodConfigProvider.LocalNode.Uri.ToSocketAddress()
+                                      SenderUri = synodConfigProvider.LocalNode.Uri
                                   });
         }
     }
