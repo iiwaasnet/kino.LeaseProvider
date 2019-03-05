@@ -87,7 +87,15 @@ namespace kino.LeaseProvider.Client
                     }
                     else
                     {
-                        Console.WriteLine("Not a Leader");
+                        if (response.LeaseIssueFailed)
+                        {
+                            Console.WriteLine("LPS cluster failed to issue a lease!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Not a Leader");
+                        }
+                        
                     }
                 }
                 else

@@ -15,6 +15,9 @@ namespace kino.LeaseProvider.Messages
         [ProtoMember(2)]
         public Lease Lease { get; set; }
 
+        [ProtoMember(3)]
+        public bool LeaseIssueFailed { get; set; }
+
         public override ushort Version => MessageVersion;
 
         public override byte[] Identity => MessageIdentity;

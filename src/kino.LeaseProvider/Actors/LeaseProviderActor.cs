@@ -68,6 +68,7 @@ namespace kino.LeaseProvider.Actors
                                                                   Owner = leaseOwner
                                                               }
                                                             : null,
+                                                LeaseIssueFailed = lease == null,
                                                 Partition = clusterName
                                             });
 
